@@ -11,12 +11,12 @@ public enum StateType
 }
 
 [Serializable]
-public class PlayerParameter        //Íæ¼ÒÊý¾Ý
+public class PlayerParameter        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 {
     public bool canMove;
     public bool canJump;
     public Rigidbody2D rb;
-    public Vector2 speed;            //´ø·½ÏòµÄspeed£¬×ÛºÏÍæ¼Ò×óÓÒ³¯ÏòºÍËÙ¶ÈÇúÏß
+    public Vector2 speed;            //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½speedï¿½ï¿½ï¿½Ûºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò³ï¿½ï¿½ï¿½ï¿½ï¿½Ù¶ï¿½ï¿½ï¿½ï¿½ï¿½
     public float moveTime;
     public float direction;
     public AnimationCurve moveCurve;
@@ -25,21 +25,21 @@ public class PlayerParameter        //Íæ¼ÒÊý¾Ý
     public GameObject catHead;
     public Vector2 jumpPos;
 
-    //Ð´Íê¶ÔÏó³ØÔÙÐÞ¸ÄÕâ¸ö--½ö¹©²âÊÔ
+    //Ð´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Þ¸ï¿½ï¿½ï¿½ï¿½--ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     public GameObject circleLoop;
 
-    //Íæ¼ÒÎ»ÒÆ²ÎÊý--ÓÃÓÚÅÐ¶¨¹âÈ¦³ÖÐøÊ±¼ä
+    //ï¿½ï¿½ï¿½Î»ï¿½Æ²ï¿½ï¿½ï¿½--ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½ï¿½È¦ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½
     public float extendDuration;
     public float initCD;
     public float cdTime;
 
-    //Åö×²¼ì²âÏà¹Ø--ÐèÒªÔÚInspector¸³Öµ
+    //ï¿½ï¿½×²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½--ï¿½ï¿½Òªï¿½ï¿½Inspectorï¿½ï¿½Öµ
     public Transform rayPoint_front;
     public Transform rayPoint_back;
     public float radius;
     public LayerMask lightLayer;
     public Tilemap lightTile;
-    public BoundsInt bounds;       //tilemapµÄ±ß½ç
+    public BoundsInt bounds;       //tilemapï¿½Ä±ß½ï¿½
 }
 
 public class PlayerFSM : MonoBehaviour
@@ -57,26 +57,28 @@ public class PlayerFSM : MonoBehaviour
 
         parameter.catHead.SetActive(false);
 
-        //°ó¶¨Íæ¼Ò×é¼þ
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         parameter.rb = GetComponent<Rigidbody2D>();
         parameter.inputHandler = GetComponent<PlayerInputHandler>();
         Debug.Log(parameter.inputHandler);
         parameter.animator = GetComponentInChildren<Animator>();
 
-        //»ñÈ¡ÍßÆ¬µØÍ¼±ß½çµÄÒýÓÃ ²¢³õÊ¼»¯ËùÓÐlightTileÖÐµÄÍßÆ¬ÎªÍ¸Ã÷
+        //ï¿½ï¿½È¡ï¿½ï¿½Æ¬ï¿½ï¿½Í¼ï¿½ß½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½lightTileï¿½Ðµï¿½ï¿½ï¿½Æ¬ÎªÍ¸ï¿½ï¿½
         parameter.bounds = parameter.lightTile.cellBounds;
         for (int x = parameter.bounds.xMin; x <= parameter.bounds.xMax; x++)
         {
             for (int y = parameter.bounds.yMin; y < parameter.bounds.yMax; y++)
             {
                 Vector3Int pos = new Vector3Int(x, y, 0);
-                Color color = new Color(1, 1, 1, 0);
+                //Color color = new Color(1, 1, 1, 0);
+                Color color = parameter.lightTile.GetColor(pos);
+                color.a=0;
                 parameter.lightTile.SetTileFlags(pos, TileFlags.None);
                 parameter.lightTile.SetColor(pos, color);
             }
         }
 
-        TransitionState(StateType.Idle);    //ÉèÖÃ³õÊ¼×´Ì¬ÎªIdle
+        TransitionState(StateType.Idle);    //ï¿½ï¿½ï¿½Ã³ï¿½Ê¼×´Ì¬ÎªIdle
 
         //test
         parameter.initCD = parameter.cdTime;
@@ -118,10 +120,10 @@ public class PlayerFSM : MonoBehaviour
         parameter.rb.velocity = parameter.speed;
     }
 
-    //Ö»ÒªÃ¨Ã¨¸½¼þÓÐÅö×²ÌåÇÒ±»µãÁÁ¾Í¿ÉÒÔºáÏòÒÆ¶¯£¬·ñÔò½ûÓÃÒÆ¶¯
+    //Ö»ÒªÃ¨Ã¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×²ï¿½ï¿½ï¿½Ò±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¿ï¿½ï¿½Ôºï¿½ï¿½ï¿½ï¿½Æ¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½
     void RacastCheck()
     {
-        //µØÃæÒÆ¶¯¼ì²â
+        //ï¿½ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½ï¿½ï¿½ï¿½
         if (!Physics2D.OverlapCircle((Vector2)parameter.rayPoint_front.position, parameter.radius, parameter.lightLayer) && Physics2D.OverlapCircle((Vector2)parameter.rayPoint_back.position, parameter.radius, parameter.lightLayer))
         {
             parameter.canMove = false;
@@ -139,7 +141,7 @@ public class PlayerFSM : MonoBehaviour
             parameter.canMove = true;
         }
 
-        ////ÌøÔ¾¼ì²â
+        ////ï¿½ï¿½Ô¾ï¿½ï¿½ï¿½
         //if (Physics2D.Raycast((Vector2)transform.position, Vector2.up).collider.gameObject.GetComponent<SpriteRenderer>().color.a <= 0.7)
         //{
         //    parameter.canJump = false;
@@ -151,7 +153,7 @@ public class PlayerFSM : MonoBehaviour
         //}
     }
 
-    void OnDrawGizmos()    //ÏÔÊ¾ÉäÏß²ÎÊý
+    void OnDrawGizmos()    //ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ß²ï¿½ï¿½ï¿½
     {
         Gizmos.DrawWireSphere(parameter.rayPoint_front.position, parameter.radius);
         Gizmos.DrawWireSphere(parameter.rayPoint_back.position, parameter.radius);

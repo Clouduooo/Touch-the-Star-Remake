@@ -96,7 +96,8 @@ public class CircleLoop : MonoBehaviour
     {
         float startTime = Time.time;
         float endTime = startTime + fadeDuaration; // ����ʱ��ΪfadeDuaration��
-        Color color = new Color(1, 1, 1, 0);
+        //Color color = new Color(1, 1, 1, 0);
+        Color color = lightTile.GetColor(pos);
 
         while (Time.time < endTime)
         {
