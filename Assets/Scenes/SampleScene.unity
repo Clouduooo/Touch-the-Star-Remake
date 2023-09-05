@@ -4589,7 +4589,7 @@ Transform:
   m_LocalPosition: {x: 0.02, y: -0.44, z: 0}
   m_LocalScale: {x: 40, y: 40, z: 40}
   m_ConstrainProportionsScale: 1
-  m_Children:
+  m_Children: []
   m_Father: {fileID: 468886319}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4601,7 +4601,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1862132314}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: c449241d246c5a44299088c9081aa012, type: 2}
   m_CullingMode: 0
