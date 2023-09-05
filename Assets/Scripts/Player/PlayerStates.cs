@@ -11,7 +11,7 @@ public class IdleState : IPlayerState
     private PlayerFSM manager;
     private PlayerParameter parameter;
 
-    public IdleState(PlayerFSM manager)  //构造函数中获得状态机和玩家数据的引用
+    public IdleState(PlayerFSM manager)  //Get reference of PlayerFSM and Player Data from Initiate Function
     {
         this.manager = manager;
         this.parameter = manager.parameter;
@@ -19,7 +19,7 @@ public class IdleState : IPlayerState
 
     public void OnEnter()
     {
-        //TODO:播放动画
+        //TODO:Play animation
         parameter.animator.Play("Idle");
     }
 
@@ -34,7 +34,7 @@ public class IdleState : IPlayerState
         {
             manager.TransitionState(StateType.Jump);
         }
-        else if(parameter.inputHandler.MovementInput.x != 0)     //如果按下移动按钮
+        else if(parameter.inputHandler.MovementInput.x != 0)     //if press move button
         {
             manager.TransitionState(StateType.Move);
         }
@@ -48,7 +48,7 @@ public class MoveState : IPlayerState
     private PlayerFSM manager;
     private PlayerParameter parameter;
 
-    public MoveState(PlayerFSM manager)  //构造函数中获得状态机和玩家数据的引用
+    public MoveState(PlayerFSM manager)  //Get reference of PlayerFSM and Player Data from Initiate Function
     {
         this.manager = manager;
         this.parameter = manager.parameter;
@@ -93,14 +93,14 @@ public class MoveState : IPlayerState
 
         if(parameter.direction != 0 && parameter.initCD >= parameter.cdTime)
         {
-            parameter.extendDuration = 2f;      //设定横向移动时光圈扩散时间长度
+            parameter.extendDuration = 2f;      //Set time duration of circle loop while moving on platform
             GameObject.Instantiate(parameter.circleLoop, parameter.rayPoint_front.transform.position, Quaternion.identity);
             parameter.initCD = 0;
         }
 
         if (parameter.canMove)
         {
-            //地面上横向移动逻辑
+            //Moving logic on platform
             if (parameter.direction != 0 && parameter.moveTime < 0.6f)
             {
                 parameter.speed = new Vector2(parameter.moveCurve.Evaluate(parameter.moveTime) * parameter.direction, 0);
@@ -126,7 +126,7 @@ public class JumpState : IPlayerState
     private PlayerFSM manager;
     private PlayerParameter parameter;
 
-    public JumpState(PlayerFSM manager)  //构造函数中获得状态机和玩家数据的引用
+    public JumpState(PlayerFSM manager)  //Get reference of PlayerFSM and Player Data from Initiate Function
     {
         this.manager = manager;
         this.parameter = manager.parameter;
