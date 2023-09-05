@@ -15,7 +15,7 @@ public class CircleLoop : MonoBehaviour
     [SerializeField] Vector3 middlePos;
     private float t;
     private float alpha;
-    [SerializeField] float fadeDuaration;   //ÍßÆ¬ÏÔÏÖÊ±¼ä³¤¶È
+    [SerializeField] float fadeDuaration;   //ï¿½ï¿½Æ¬ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ä³¤ï¿½ï¿½
     [SerializeField] AnimationCurve lightTileCurve;
     [SerializeField] AnimationCurve fadeCurve;
 
@@ -47,31 +47,31 @@ public class CircleLoop : MonoBehaviour
     //    }
     //}
 
-    ///¹âÈ¦À©É¢²¢Öð½¥ÏûÊ§
+    ///ï¿½ï¿½È¦ï¿½ï¿½É¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê§
     void ExtendAndFade()
     {
         if (t < player.parameter.extendDuration)
         {
             middlePos = transform.position;
             t += Time.deltaTime;
-            radius = lightTileCurve.Evaluate(t) * 5;        //°ë¾¶ËæÊ±¼äÇúÏßÀ©´ó
-            transform.localScale = new Vector3(radius, radius, radius);
-            if (t >= player.parameter.extendDuration - 1f)               //Öð½¥µ­³ö
+            radius = lightTileCurve.Evaluate(t) * 5;        //ï¿½ë¾¶ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            transform.localScale = new Vector3(radius/2.0f, radius/2.0f, radius/2.0f);
+            if (t >= player.parameter.extendDuration - 1f)               //ï¿½ð½¥µï¿½ï¿½ï¿½
             {
-                alpha = fadeCurve.Evaluate(player.parameter.extendDuration - t);    //0-1Ö®¼ä
+                alpha = fadeCurve.Evaluate(player.parameter.extendDuration - t);    //0-1Ö®ï¿½ï¿½
                 spriteRenderer.color = new Color(1, 1, 1, alpha);
             }
-            //ÉèÖÃboudingbox
+            //ï¿½ï¿½ï¿½ï¿½boudingbox
             x0 = (int)Mathf.Ceil(grid.WorldToCell(new Vector3(middlePos.x - radius, middlePos.y, middlePos.z)).x);
             x1 = (int)Mathf.Floor(grid.WorldToCell(new Vector3(middlePos.x + radius, middlePos.y, middlePos.z)).x);
             y0 = (int)Mathf.Ceil(grid.WorldToCell(new Vector3(middlePos.x, middlePos.y - radius, middlePos.z)).y);
             y1 = (int)Mathf.Floor(grid.WorldToCell(new Vector3(middlePos.x, middlePos.y + radius, middlePos.z)).y);
             z = (int)Mathf.Floor(grid.WorldToCell(new Vector3(middlePos.x, middlePos.y, middlePos.z)).z);
-            Debug.DrawLine(new Vector3(middlePos.x - radius, middlePos.y - radius, middlePos.z), new Vector3(middlePos.x + radius, middlePos.y - radius, middlePos.z), Color.green, .5f, false);
-            Debug.DrawLine(new Vector3(middlePos.x - radius, middlePos.y - radius, middlePos.z), new Vector3(middlePos.x - radius, middlePos.y + radius, middlePos.z), Color.green, .5f, false);
-            Debug.DrawLine(new Vector3(middlePos.x + radius, middlePos.y - radius, middlePos.z), new Vector3(middlePos.x + radius, middlePos.y + radius, middlePos.z), Color.green, .5f, false);
-            Debug.DrawLine(new Vector3(middlePos.x - radius, middlePos.y + radius, middlePos.z), new Vector3(middlePos.x + radius, middlePos.y + radius, middlePos.z), Color.green, .5f, false);
-            //±éÀúÐÞ¸ÄtilemapµÄÍ¸Ã÷¶È ÔÚ1sÄÚalpha´Ó0-1
+            Debug.DrawLine(new Vector3(middlePos.x - radius, middlePos.y - radius, middlePos.z), new Vector3(middlePos.x + radius, middlePos.y - radius, middlePos.z), Color.green, .0f, false);
+            Debug.DrawLine(new Vector3(middlePos.x - radius, middlePos.y - radius, middlePos.z), new Vector3(middlePos.x - radius, middlePos.y + radius, middlePos.z), Color.green, .0f, false);
+            Debug.DrawLine(new Vector3(middlePos.x + radius, middlePos.y - radius, middlePos.z), new Vector3(middlePos.x + radius, middlePos.y + radius, middlePos.z), Color.green, .0f, false);
+            Debug.DrawLine(new Vector3(middlePos.x - radius, middlePos.y + radius, middlePos.z), new Vector3(middlePos.x + radius, middlePos.y + radius, middlePos.z), Color.green, .0f, false);
+            //ï¿½ï¿½ï¿½ï¿½ï¿½Þ¸ï¿½tilemapï¿½ï¿½Í¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½1sï¿½ï¿½alphaï¿½ï¿½0-1
             for (int x = x0; x <= x1; x++)
             {
                 for (int y = y0; y <= y1; y++)
@@ -86,28 +86,28 @@ public class CircleLoop : MonoBehaviour
         }
         else
         {
-            //ÊÕ»Øµ½¶ÔÏó³Ø
+            //ï¿½Õ»Øµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             //Destroy(gameObject);
         }
     }
 
-    //ÍßÆ¬Öð½¥³öÏÖ
+    //ï¿½ï¿½Æ¬ï¿½ð½¥³ï¿½ï¿½ï¿½
     IEnumerator TileAppearAlpha(Vector3Int pos)
     {
         float startTime = Time.time;
-        float endTime = startTime + fadeDuaration; // ½¥±äÊ±³¤ÎªfadeDuarationÃë
+        float endTime = startTime + fadeDuaration; // ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ÎªfadeDuarationï¿½ï¿½
         Color color = new Color(1, 1, 1, 0);
 
         while (Time.time < endTime)
         {
-            float t1 = (Time.time - startTime) / (endTime - startTime); // ¼ÆËã½¥±ä½ø¶È(0-1Ö®¼ä)
-            color.a = t1; // ¸ù¾Ý½ø¶ÈÉèÖÃÍ¸Ã÷¶È
-            player.parameter.lightTile.SetTileFlags(pos, TileFlags.None);   //½âËøTile
-            player.parameter.lightTile.SetColor(pos, color);                //¸ü¸ÄÑÕÉ«
+            float t1 = (Time.time - startTime) / (endTime - startTime); // ï¿½ï¿½ï¿½ã½¥ï¿½ï¿½ï¿½ï¿½ï¿½(0-1Ö®ï¿½ï¿½)
+            color.a = t1; // ï¿½ï¿½ï¿½Ý½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ï¿½ï¿½ï¿½
+            player.parameter.lightTile.SetTileFlags(pos, TileFlags.None);   //ï¿½ï¿½ï¿½ï¿½Tile
+            player.parameter.lightTile.SetColor(pos, color);                //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«
             yield return null;
         }
 
-        // ½¥±äÍê³Éºó£¬½«Í¸Ã÷¶ÈÉèÖÃÎª×îÖÕÖµ1
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Éºó£¬½ï¿½Í¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½Öµ1
         color.a = 1f;
         player.parameter.lightTile.SetTileFlags(pos, TileFlags.None);
         player.parameter.lightTile.SetColor(pos, color);
