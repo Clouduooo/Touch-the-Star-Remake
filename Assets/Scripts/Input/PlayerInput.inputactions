@@ -13,11 +13,47 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "JumpUp",
+                    "type": "Button",
+                    "id": "4ee72e9e-a823-4943-86c8-0c81f20ee79c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "JumpDown",
+                    "type": "Button",
+                    "id": "0f3d5392-24b5-4fca-847e-5021baab753c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "JumpLeft",
+                    "type": "Button",
+                    "id": "0c914197-a908-4a0c-b01e-178249c5f124",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "JumpRight",
+                    "type": "Button",
+                    "id": "ed75ae79-e19f-487c-8c8d-76334258e479",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
                 {
-                    "name": "WSAD",
+                    "name": "arrow",
                     "id": "5def7489-ff63-4735-87e5-579bda425d11",
                     "path": "2DVector",
                     "interactions": "",
@@ -30,7 +66,7 @@
                 {
                     "name": "up",
                     "id": "81197295-afed-4133-a146-c9f579502c3b",
-                    "path": "<Keyboard>/w",
+                    "path": "<Keyboard>/upArrow",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard and Mouse",
@@ -41,7 +77,7 @@
                 {
                     "name": "down",
                     "id": "2f2a92bc-72df-448b-88a5-e529706c6b4a",
-                    "path": "<Keyboard>/s",
+                    "path": "<Keyboard>/downArrow",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard and Mouse",
@@ -52,7 +88,7 @@
                 {
                     "name": "left",
                     "id": "1bc490cf-85cc-47d9-b886-6f5f101825ed",
-                    "path": "<Keyboard>/a",
+                    "path": "<Keyboard>/leftArrow",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard and Mouse",
@@ -63,13 +99,57 @@
                 {
                     "name": "right",
                     "id": "cf9be682-e261-489f-a49d-a826de82a61f",
-                    "path": "<Keyboard>/d",
+                    "path": "<Keyboard>/rightArrow",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard and Mouse",
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "d36b79a1-9803-4a74-bd0e-86a11237f7a3",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "JumpUp",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "abc1440f-01fb-43b7-a4f0-35c88c3454bd",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "JumpDown",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a638bd21-f92f-405a-9e20-18d0c7f5aad6",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "JumpLeft",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7a745411-af99-4a5e-9f31-96bc87d3e7e2",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "JumpRight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

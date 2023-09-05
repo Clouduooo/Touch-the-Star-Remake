@@ -20,6 +20,7 @@ public class IdleState : IPlayerState
     public void OnEnter()
     {
         //TODO:²¥·Å¶¯»­
+        parameter.animator.Play("Idle");
     }
 
     public void OnExit()
@@ -29,7 +30,7 @@ public class IdleState : IPlayerState
 
     public void OnUpdate()
     {
-        if(parameter.inputHandler.MovementInput.y != 0)
+        if(parameter.inputHandler.jumpDir != JumpInput.None)
         {
             manager.TransitionState(StateType.Jump);
         }
@@ -54,18 +55,18 @@ public class MoveState : IPlayerState
     }
     public void OnEnter()
     {
-        
+        parameter.animator.Play("Idle");
     }
 
     public void OnExit()
     {
-
+        parameter.speed = new Vector2(0, 0);
     }
 
     public void OnUpdate()
     {
         DetectMove();
-        if(parameter.inputHandler.MovementInput.y != 0)
+        if(parameter.inputHandler.jumpDir != JumpInput.None)
         {
             manager.TransitionState(StateType.Jump);
         }
@@ -132,31 +133,36 @@ public class JumpState : IPlayerState
     }
     public void OnEnter()
     {
-
+        Jump();
     }
 
     public void OnExit()
     {
-
+        parameter.catHead.SetActive(false);
+        parameter.jumpFinished = false;
     }
 
     public void OnUpdate()
     {
-        DetectJump();
-        if (!parameter.canJump)
+        if (parameter.jumpFinished)
         {
-            if(parameter.canMove)    manager.TransitionState(StateType.Move);
-            else    manager.TransitionState(StateType.Idle);
+            if (parameter.canMove)
+            {
+                parameter.inputHandler.jumpDir = JumpInput.None;
+                manager.TransitionState(StateType.Move);
+            }
+            else
+            {
+                parameter.inputHandler.jumpDir = JumpInput.None;
+                manager.TransitionState(StateType.Idle);
+            }
         }
     }
 
-    void DetectJump()
+    void Jump()
     {
-        if (parameter.canJump)
-        {
-            parameter.catHead.SetActive(true);
-            //parameter.catHead.transform.position = Vector2.MoveTowards(manager.gameObject.transform.position, parameter.jumpPos, );
-        }
+        parameter.animator.Play("Jump_Prepare");
+        parameter.catHead.SetActive(true);
     }
 }
 #endregion

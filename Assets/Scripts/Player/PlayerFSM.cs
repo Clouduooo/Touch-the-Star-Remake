@@ -11,35 +11,37 @@ public enum StateType
 }
 
 [Serializable]
-public class PlayerParameter        //�������
+public class PlayerParameter        //player's data
 {
     public bool canMove;
-    public bool canJump;
     public Rigidbody2D rb;
-    public Vector2 speed;            //�������speed���ۺ�������ҳ�����ٶ�����
+    public Vector2 speed;            //speed with direction
     public float moveTime;
     public float direction;
     public AnimationCurve moveCurve;
     public PlayerInputHandler inputHandler;
     public Animator animator;
     public GameObject catHead;
-    public Vector2 jumpPos;
 
-    //д���������޸����--��������
+    //jump related
+    public Vector2 jumpPos;
+    public bool jumpFinished;   //Use to change state;
+
+    //test
     public GameObject circleLoop;
 
-    //���λ�Ʋ���--�����ж���Ȧ����ʱ��
+    //test for instantiate circle loop
     public float extendDuration;
     public float initCD;
     public float cdTime;
 
-    //��ײ������--��Ҫ��Inspector��ֵ
+    //Raycast Checking parameter
     public Transform rayPoint_front;
     public Transform rayPoint_back;
     public float radius;
     public LayerMask lightLayer;
     public Tilemap lightTile;
-    public BoundsInt bounds;       //tilemap�ı߽�
+    public BoundsInt bounds;       //tilemap's bound
 }
 
 public class PlayerFSM : MonoBehaviour
@@ -57,13 +59,13 @@ public class PlayerFSM : MonoBehaviour
 
         parameter.catHead.SetActive(false);
 
-        //��������
+        //Attach to player's component
         parameter.rb = GetComponent<Rigidbody2D>();
         parameter.inputHandler = GetComponent<PlayerInputHandler>();
         Debug.Log(parameter.inputHandler);
         parameter.animator = GetComponentInChildren<Animator>();
 
-        //��ȡ��Ƭ��ͼ�߽������ ����ʼ������lightTile�е���ƬΪ͸��
+        //Initialize all tiles with alpha = 0
         parameter.bounds = parameter.lightTile.cellBounds;
         for (int x = parameter.bounds.xMin; x <= parameter.bounds.xMax; x++)
         {
@@ -78,7 +80,7 @@ public class PlayerFSM : MonoBehaviour
             }
         }
 
-        TransitionState(StateType.Idle);    //���ó�ʼ״̬ΪIdle
+        TransitionState(StateType.Idle);    //Initialize the first state--Idle
 
         //test
         parameter.initCD = parameter.cdTime;
@@ -120,40 +122,25 @@ public class PlayerFSM : MonoBehaviour
         parameter.rb.velocity = parameter.speed;
     }
 
-    //ֻҪèè��������ײ���ұ������Ϳ��Ժ����ƶ�����������ƶ�
+    //Raycast Checking Function
     void RacastCheck()
     {
-        //�����ƶ����
+        //Move Checking
         if (!Physics2D.OverlapCircle((Vector2)parameter.rayPoint_front.position, parameter.radius, parameter.lightLayer) && Physics2D.OverlapCircle((Vector2)parameter.rayPoint_back.position, parameter.radius, parameter.lightLayer))
         {
             parameter.canMove = false;
         }
-        //else if(Physics2D.OverlapCircle((Vector2)parameter.rayPoint_front.position, parameter.radius, parameter.lightLayer))
-        //{
-        //    //Debug.Log("Check Front!");
-        //    if(Physics2D.OverlapCircle((Vector2)parameter.rayPoint_front.position, parameter.radius, parameter.lightLayer).gameObject.GetComponent<Tilemap>().GetColor(new Vector3Int((int)Mathf.Round(parameter.rayPoint_front.position.x), (int)Mathf.Round(parameter.rayPoint_front.position.y), 0)).a < 1f)
-        //    {
-        //        parameter.canMove = false;
-        //    }
-        //}
+        else if(!Physics2D.OverlapCircle((Vector2)parameter.rayPoint_front.position, parameter.radius, parameter.lightLayer) && !Physics2D.OverlapCircle((Vector2)parameter.rayPoint_back.position, parameter.radius, parameter.lightLayer))
+        {
+            parameter.canMove = false;
+        }
         else
         {
             parameter.canMove = true;
         }
-
-        ////��Ծ���
-        //if (Physics2D.Raycast((Vector2)transform.position, Vector2.up).collider.gameObject.GetComponent<SpriteRenderer>().color.a <= 0.7)
-        //{
-        //    parameter.canJump = false;
-        //}
-        //else
-        //{
-        //    parameter.jumpPos = Physics2D.Raycast((Vector2)transform.position, Vector2.up).collider.gameObject.transform.position;
-        //    parameter.canJump = true;
-        //}
     }
 
-    void OnDrawGizmos()    //��ʾ���߲���
+    void OnDrawGizmos()    //Show raycast in editor mode
     {
         Gizmos.DrawWireSphere(parameter.rayPoint_front.position, parameter.radius);
         Gizmos.DrawWireSphere(parameter.rayPoint_back.position, parameter.radius);

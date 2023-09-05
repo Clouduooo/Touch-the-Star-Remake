@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 26a3cf20a7e0b6944b93997dc9acc438
+guid: 5474e077b3aad0f40a6328c70171b597
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -47,7 +47,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 80
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -105,118 +105,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: cat-jump-1 1_0
+      name: cat-leg_0
       rect:
         serializedVersion: 2
-        x: 15
-        y: 13
-        width: 39
-        height: 29
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: d34bc550600f97148b3cbd96944f7eeb
-      internalID: -1787093530
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: cat-jump-1 1_1
-      rect:
-        serializedVersion: 2
-        x: 80
-        y: 13
-        width: 37
-        height: 30
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 08d9561545353ba479d5248482dd3028
-      internalID: -1833822049
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: cat-jump-1 1_2
-      rect:
-        serializedVersion: 2
-        x: 145
-        y: 16
-        width: 35
-        height: 30
-      alignment: 9
-      pivot: {x: 0.5026803, y: -0.1174942}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: ea4228dcad33b2e4c841c28255ba5e13
-      internalID: 427232133
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: cat-jump-1 1_3
-      rect:
-        serializedVersion: 2
-        x: 209
-        y: 16
-        width: 35
-        height: 30
-      alignment: 9
-      pivot: {x: 0.49999955, y: -0.11067664}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: f4bb788de45f30e4b8218c700cb12734
-      internalID: -2060518086
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: cat-jump-1 1_4
-      rect:
-        serializedVersion: 2
-        x: 269
-        y: 12
-        width: 44
-        height: 25
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 30be3eab7adf2c1458cb292dcc818d19
-      internalID: 259901581
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: cat-jump-1 1_5
-      rect:
-        serializedVersion: 2
-        x: 340
+        x: 20
         y: 13
         width: 23
-        height: 6
+        height: 8
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -224,8 +119,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f466c0e9233443442a6c6db902b25a29
-      internalID: -641376269
+      spriteID: 959fdc362b3e1464fa3faadcbe0b4756
+      internalID: -1931182081
       vertices: []
       indices: 
       edges: []
@@ -241,12 +136,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      cat-jump-1 1_0: -1787093530
-      cat-jump-1 1_2: 427232133
-      cat-jump-1 1_3: -2060518086
-      cat-jump-1 1_5: -641376269
-      cat-jump-1 1_1: -1833822049
-      cat-jump-1 1_4: 259901581
+      cat-leg_0: -1931182081
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

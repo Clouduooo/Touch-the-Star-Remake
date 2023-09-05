@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 4a1efe1d649ab9f41804552f7715d15c
+guid: 30c2b460de562ed499e5fc34085ea658
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -105,7 +105,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: cat-jump-1_0
+      name: cat-jump-Sheet_0
       rect:
         serializedVersion: 2
         x: 15
@@ -119,14 +119,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3307c1f627fcc4f4d81494ed8755504b
-      internalID: -1571948476
+      spriteID: b2344133e1e50e44bb632e3ea66c1248
+      internalID: 309634148
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cat-jump-1_1
+      name: cat-jump-Sheet_1
       rect:
         serializedVersion: 2
         x: 80
@@ -140,14 +140,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 59c775b0c9ede764e85b0920bea93fe6
-      internalID: 1186824336
+      spriteID: 2833daab5fec31f4f974f70415e67efe
+      internalID: 1729317597
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cat-jump-1_2
+      name: cat-jump-Sheet_2
       rect:
         serializedVersion: 2
         x: 145
@@ -155,77 +155,77 @@ TextureImporter:
         width: 35
         height: 30
       alignment: 9
-      pivot: {x: 0.4999, y: -0.0762236}
+      pivot: {x: 0.49999955, y: -0.08189516}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: fb32aa4a9c37594429f70815c567d21d
-      internalID: 451606524
+      spriteID: 0770821e6175d5242a209b51773d7097
+      internalID: -2052732629
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cat-jump-1_3
+      name: cat-jump-Sheet_3
       rect:
         serializedVersion: 2
-        x: 209
+        x: 212
         y: 16
-        width: 35
+        width: 31
         height: 30
       alignment: 9
-      pivot: {x: 0.4999, y: -0.0762236}
+      pivot: {x: 0.50454414, y: -0.0845247}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 440ae1d465f37ab4ebf08fb48f603ef8
-      internalID: -2002789940
+      spriteID: 2a561983fef707845832603849a585ba
+      internalID: -225753008
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cat-jump-1_4
+      name: cat-jump-Sheet_4
       rect:
         serializedVersion: 2
-        x: 269
+        x: 266
         y: 12
-        width: 44
+        width: 50
         height: 25
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+      alignment: 9
+      pivot: {x: 0.5028174, y: 0.028175011}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b7990c424d74dd04db4eee217eb3eaa0
-      internalID: 113632205
+      spriteID: 0430397d4d527ec4cbab248483f015b5
+      internalID: 440545248
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cat-jump-1_5
+      name: cat-jump-Sheet_5
       rect:
         serializedVersion: 2
         x: 340
         y: 13
         width: 23
         height: 24
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.029349009}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7e6dd54f0716f6a488fa7294043de631
-      internalID: 1153283547
+      spriteID: 432b27d6dafaa7944bdf00827ce5ba76
+      internalID: 1084445962
       vertices: []
       indices: 
       edges: []
@@ -241,12 +241,12 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      cat-jump-1_1: 1186824336
-      cat-jump-1_2: 451606524
-      cat-jump-1_5: 1153283547
-      cat-jump-1_3: -2002789940
-      cat-jump-1_0: -1571948476
-      cat-jump-1_4: 113632205
+      cat-jump-Sheet_1: 1729317597
+      cat-jump-Sheet_5: 1084445962
+      cat-jump-Sheet_2: -2052732629
+      cat-jump-Sheet_3: -225753008
+      cat-jump-Sheet_4: 440545248
+      cat-jump-Sheet_0: 309634148
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
