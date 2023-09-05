@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Tilemaps;
 
 public enum StateType
 {
@@ -24,11 +25,21 @@ public class PlayerParameter        //玩家数据
     public GameObject catHead;
     public Vector2 jumpPos;
 
+    //写完对象池再修改这个--仅供测试
+    public GameObject circleLoop;
+
+    //玩家位移参数--用于判定光圈持续时间
+    public float extendDuration;
+    public float initCD;
+    public float cdTime;
+
     //碰撞检测相关--需要在Inspector赋值
     public Transform rayPoint_front;
     public Transform rayPoint_back;
     public float radius;
     public LayerMask lightLayer;
+    public Tilemap lightTile;
+    public BoundsInt bounds;       //tilemap的边界
 }
 
 public class PlayerFSM : MonoBehaviour
@@ -44,14 +55,31 @@ public class PlayerFSM : MonoBehaviour
         states.Add(StateType.Move, new MoveState(this));
         states.Add(StateType.Jump, new JumpState(this));
 
-        TransitionState(StateType.Idle);    //设置初始状态为Idle
-
         parameter.catHead.SetActive(false);
 
         //绑定玩家组件
         parameter.rb = GetComponent<Rigidbody2D>();
         parameter.inputHandler = GetComponent<PlayerInputHandler>();
+        Debug.Log(parameter.inputHandler);
         parameter.animator = GetComponentInChildren<Animator>();
+
+        //获取瓦片地图边界的引用 并初始化所有lightTile中的瓦片为透明
+        parameter.bounds = parameter.lightTile.cellBounds;
+        for (int x = parameter.bounds.xMin; x <= parameter.bounds.xMax; x++)
+        {
+            for (int y = parameter.bounds.yMin; y < parameter.bounds.yMax; y++)
+            {
+                Vector3Int pos = new Vector3Int(x, y, 0);
+                Color color = new Color(1, 1, 1, 0);
+                parameter.lightTile.SetTileFlags(pos, TileFlags.None);
+                parameter.lightTile.SetColor(pos, color);
+            }
+        }
+
+        TransitionState(StateType.Idle);    //设置初始状态为Idle
+
+        //test
+        parameter.initCD = parameter.cdTime;
     }
 
     private void FixedUpdate()
@@ -61,6 +89,7 @@ public class PlayerFSM : MonoBehaviour
 
     void Update()
     {
+        parameter.initCD += Time.deltaTime; 
         FlipDirection();
         RacastCheck();
         currentState.OnUpdate();
@@ -93,26 +122,33 @@ public class PlayerFSM : MonoBehaviour
     void RacastCheck()
     {
         //地面移动检测
-        if (!Physics2D.OverlapCircle((Vector2)parameter.rayPoint_front.position, parameter.radius, parameter.lightLayer) && Physics2D.OverlapCircle((Vector2)parameter.rayPoint_back.position, parameter.radius, parameter.lightLayer) ||
-            Physics2D.OverlapCircle((Vector2)parameter.rayPoint_front.position, parameter.radius, parameter.lightLayer).gameObject.GetComponent<SpriteRenderer>().color.a != 1)
+        if (!Physics2D.OverlapCircle((Vector2)parameter.rayPoint_front.position, parameter.radius, parameter.lightLayer) && Physics2D.OverlapCircle((Vector2)parameter.rayPoint_back.position, parameter.radius, parameter.lightLayer))
         {
             parameter.canMove = false;
         }
+        //else if(Physics2D.OverlapCircle((Vector2)parameter.rayPoint_front.position, parameter.radius, parameter.lightLayer))
+        //{
+        //    //Debug.Log("Check Front!");
+        //    if(Physics2D.OverlapCircle((Vector2)parameter.rayPoint_front.position, parameter.radius, parameter.lightLayer).gameObject.GetComponent<Tilemap>().GetColor(new Vector3Int((int)Mathf.Round(parameter.rayPoint_front.position.x), (int)Mathf.Round(parameter.rayPoint_front.position.y), 0)).a < 1f)
+        //    {
+        //        parameter.canMove = false;
+        //    }
+        //}
         else
         {
             parameter.canMove = true;
         }
 
-        //跳跃检测
-        if (Physics2D.Raycast((Vector2)transform.position, Vector2.up).collider.gameObject.GetComponent<SpriteRenderer>().color.a <= 0.7)
-        {
-            parameter.canJump = false;
-        }
-        else
-        {
-            parameter.jumpPos = Physics2D.Raycast((Vector2)transform.position, Vector2.up).collider.gameObject.transform.position;
-            parameter.canJump = true;
-        }
+        ////跳跃检测
+        //if (Physics2D.Raycast((Vector2)transform.position, Vector2.up).collider.gameObject.GetComponent<SpriteRenderer>().color.a <= 0.7)
+        //{
+        //    parameter.canJump = false;
+        //}
+        //else
+        //{
+        //    parameter.jumpPos = Physics2D.Raycast((Vector2)transform.position, Vector2.up).collider.gameObject.transform.position;
+        //    parameter.canJump = true;
+        //}
     }
 
     void OnDrawGizmos()    //显示射线参数

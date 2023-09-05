@@ -33,7 +33,7 @@ public class IdleState : IPlayerState
         {
             manager.TransitionState(StateType.Jump);
         }
-        if(parameter.inputHandler.MovementInput.x != 0)     //如果按下移动按钮
+        else if(parameter.inputHandler.MovementInput.x != 0)     //如果按下移动按钮
         {
             manager.TransitionState(StateType.Move);
         }
@@ -54,7 +54,7 @@ public class MoveState : IPlayerState
     }
     public void OnEnter()
     {
-
+        
     }
 
     public void OnExit()
@@ -69,7 +69,7 @@ public class MoveState : IPlayerState
         {
             manager.TransitionState(StateType.Jump);
         }
-        if(parameter.speed.x == 0)
+        else if(parameter.speed.x == 0)
         {
             manager.TransitionState(StateType.Idle);
         }
@@ -90,12 +90,19 @@ public class MoveState : IPlayerState
             parameter.direction = 0;
         }
 
+        if(parameter.direction != 0 && parameter.initCD >= parameter.cdTime)
+        {
+            parameter.extendDuration = 2f;      //设定横向移动时光圈扩散时间长度
+            GameObject.Instantiate(parameter.circleLoop, parameter.rayPoint_front.transform.position, Quaternion.identity);
+            parameter.initCD = 0;
+        }
+
         if (parameter.canMove)
         {
             //地面上横向移动逻辑
             if (parameter.direction != 0 && parameter.moveTime < 0.6f)
             {
-                parameter.speed = new Vector2(parameter.moveCurve.Evaluate(parameter.moveTime) * parameter.direction * 2, 0);
+                parameter.speed = new Vector2(parameter.moveCurve.Evaluate(parameter.moveTime) * parameter.direction, 0);
                 parameter.moveTime += Time.deltaTime;
             }else if(parameter.direction == 0)
             {
