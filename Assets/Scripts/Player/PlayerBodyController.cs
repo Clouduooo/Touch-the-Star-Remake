@@ -21,7 +21,7 @@ public class PlayerBodyController : MonoBehaviour
         horizontalToRight.Normalize();
     }
 
-    void Update()
+    void LateUpdate()
     {
         lefthead=headleft.position-left.gameObject.transform.position;
         righthead=headright.position-right.gameObject.transform.position;
@@ -32,12 +32,12 @@ public class PlayerBodyController : MonoBehaviour
         leftmid=(lefthead+leftleg)/2;
         rightmid=(righthead+rightleg)/2;
 
-        lefthead/=left.transform.localScale.x;
-        righthead/=right.transform.localScale.x;
-        leftmid/=left.transform.localScale.x;
-        rightmid/=right.transform.localScale.x;
-        leftleg/=left.transform.localScale.x;
-        rightleg/=right.transform.localScale.x;
+        lefthead.Scale(new Vector3(1.0f/left.transform.localScale.x,1.0f/left.transform.localScale.y,1.0f/left.transform.localScale.z));
+        righthead.Scale(new Vector3(1.0f/right.transform.localScale.x,1.0f/right.transform.localScale.y,1.0f/right.transform.localScale.z));
+        leftmid.Scale(new Vector3(1.0f/left.transform.localScale.x,1.0f/left.transform.localScale.y,1.0f/left.transform.localScale.z));
+        rightmid.Scale(new Vector3(1.0f/right.transform.localScale.x,1.0f/right.transform.localScale.y,1.0f/right.transform.localScale.z));
+        leftleg.Scale(new Vector3(1.0f/left.transform.localScale.x,1.0f/left.transform.localScale.y,1.0f/left.transform.localScale.z));
+        rightleg.Scale(new Vector3(1.0f/right.transform.localScale.x,1.0f/right.transform.localScale.y,1.0f/right.transform.localScale.z));
 
         left.spline.SetPosition(0,lefthead);
         left.spline.SetPosition(1,leftmid);

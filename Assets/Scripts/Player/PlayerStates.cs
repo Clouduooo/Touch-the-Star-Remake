@@ -167,36 +167,36 @@ public class JumpState : IPlayerState
 
         if (parameter.inputHandler.jumpDir == JumpInput.Up)
         {
-            parameter.animator.Play("Jump_Prepare_Verticle");
             parameter.catHead.transform.localRotation = Quaternion.Euler(0, 0, 0);
             parameter.catHead.transform.localScale = new Vector3(40, 40, 40);
             parameter.catHead.GetComponent<CatHead>().startPos = new Vector3(manager.transform.position.x, manager.transform.position.y + 16.5f, manager.transform.position.z);
+            parameter.animator.Play("Jump_Prepare_Verticle");
         }
         else if(parameter.inputHandler.jumpDir == JumpInput.Down)
         {
-            parameter.animator.Play("Jump_Prepare_Verticle");
             parameter.catHead.transform.localRotation = Quaternion.Euler(0, 0, 180);
             parameter.catHead.transform.localScale = new Vector3(40, 40, 40);
             parameter.catHead.GetComponent<CatHead>().startPos = new Vector3(manager.transform.position.x, manager.transform.position.y + 16.5f, manager.transform.position.z);
+            parameter.animator.Play("Jump_Prepare_Verticle");
         }
         else if(parameter.inputHandler.jumpDir == JumpInput.Left)
         {
             manager.transform.localScale = new Vector3(1, 1, 1);
-            parameter.animator.Play("Jump_Prepare_Horizontal");
             parameter.catHead.transform.localRotation = Quaternion.Euler(0, 0, 90);
             parameter.catHead.transform.localScale = new Vector3(40, 40, 40);
             parameter.catHead.GetComponent<CatHead>().startPos = new Vector3(manager.transform.position.x - 12.6f, manager.transform.position.y + 6.2f, manager.transform.position.z);
+            parameter.animator.Play("Jump_Prepare_Horizontal");
         }
         else if (parameter.inputHandler.jumpDir == JumpInput.Right)
         {
             manager.transform.localScale = new Vector3(-1, 1, 1);
-            parameter.animator.Play("Jump_Prepare_Horizontal");
-            parameter.catHead.transform.localRotation = Quaternion.Euler(0, 0, -90);
-            parameter.catHead.transform.localScale = new Vector3(-40, 40, 40);
+            parameter.catHead.transform.localRotation = Quaternion.Euler(0, 0, 90);
+            parameter.catHead.transform.localScale = new Vector3(40, 40, 40);
             Vector3 tempPos = parameter.leftShape.transform.position;
             parameter.leftShape.transform.position = parameter.rightShape.transform.position;
             parameter.rightShape.transform.position = tempPos;
             parameter.catHead.GetComponent<CatHead>().startPos = new Vector3(manager.transform.position.x + 12.6f, manager.transform.position.y + 6.2f, manager.transform.position.z);
+            parameter.animator.Play("Jump_Prepare_Horizontal");
         }
         parameter.catHead.SetActive(true);
     }

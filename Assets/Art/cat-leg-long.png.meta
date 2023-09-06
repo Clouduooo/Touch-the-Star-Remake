@@ -108,9 +108,9 @@ TextureImporter:
       name: cat-leg-long_0
       rect:
         serializedVersion: 2
-        x: 21
+        x: 0
         y: 15
-        width: 23
+        width: 44
         height: 26
       alignment: 9
       pivot: {x: 0.62, y: 0}

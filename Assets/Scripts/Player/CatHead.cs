@@ -16,7 +16,7 @@ public class CatHead : MonoBehaviour
     SpriteRenderer headSprite;
     public Vector3 startPos;
 
-    private void Start()
+    private void Awake()
     {
         headSprite = GetComponent<SpriteRenderer>();
     }
@@ -36,7 +36,7 @@ public class CatHead : MonoBehaviour
 
     private void Update()
     {
-        if(player.parameter.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f)
+        if(player.parameter.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.75f)
         {
             canFly = true;
             headSprite.enabled = true;
