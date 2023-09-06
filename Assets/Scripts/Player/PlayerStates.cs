@@ -96,6 +96,7 @@ public class MoveState : IPlayerState
         {
             parameter.extendDuration = 2f;      //Set time duration of circle loop while moving on platform
             GameObject.Instantiate(parameter.circleLoop, parameter.rayPoint_front.transform.position, Quaternion.identity);
+            //GameObject.Instantiate(parameter.circleLoop, manager.transform.position, Quaternion.identity);
             parameter.initCD = 0;
         }
 
@@ -104,7 +105,8 @@ public class MoveState : IPlayerState
             //Moving logic on platform
             if (parameter.direction != 0 && parameter.moveTime < 0.6f)
             {
-                parameter.speed = new Vector2(parameter.moveCurve.Evaluate(parameter.moveTime) * parameter.direction, 0);
+                parameter.speed = new Vector2(parameter.moveCurve.Evaluate(parameter.moveTime) * parameter.direction * 1.5f, 0);
+                //parameter.speed = new Vector2(55f * parameter.direction, 0);
                 parameter.moveTime += Time.deltaTime;
             }else if(parameter.direction == 0)
             {

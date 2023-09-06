@@ -73,7 +73,7 @@ public class CatHead : MonoBehaviour
 
     void Fly()
     {
-        if(canFly && t <= 10f)      //Manually set the flying duration as 10f in the flyingCurve!
+        if(canFly && t <= 0.5f)      //Manually set the flying duration as 1f in the flyingCurve!
         {
             t += Time.deltaTime;
             displacement = flyingCurve.Evaluate(t);
@@ -94,9 +94,8 @@ public class CatHead : MonoBehaviour
                 transform.position = new Vector3(startPos.x + displacement, startPos.y, startPos.z);
             }
         }
-        else if(canFly && t > 10f)      //if head collide with nothing, fly back and leave JumpState!
+        else if(canFly && t > 0.5f)      //if head collide with nothing, fly back and leave JumpState!
         {
-            Debug.Log("into!");
             t = 0;
             //canFly = false;
             player.parameter.leftShape.SetActive(false);
@@ -108,7 +107,7 @@ public class CatHead : MonoBehaviour
     IEnumerator CatFly()
     {
         t = 0f;
-        while(Vector3.Distance(head_left.position, leg_left.position) >= 2.5f || Vector3.Distance(head_right.position, leg_right.position) >= 2f)
+        while(Vector3.Distance(head_left.position, leg_left.position) >= 2.5f || Vector3.Distance(head_right.position, leg_right.position) >= 2.5f)
         {
             t += Time.deltaTime;
             displacement = flyingCurve.Evaluate(t);
@@ -130,13 +129,18 @@ public class CatHead : MonoBehaviour
             yield return null;
         }
 
+        headSprite.enabled = false;
+
         player.parameter.animator.Play("Jump_Rolling");
+        yield return null;
 
         while (player.parameter.animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f)
         {
-            Debug.Log(player.parameter.animator.GetCurrentAnimatorStateInfo(0).normalizedTime);
             yield return null;
         }
+        
+        //TODO:Play the audio of landing
+
         player.transform.position = collidePos;
         //TODD: Check if animation is over, set head unactive and change state
         switch (jumpDir)
