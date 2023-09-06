@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.Common;
 using UnityEngine;
 
 public class CatHead : MonoBehaviour
@@ -12,11 +13,19 @@ public class CatHead : MonoBehaviour
     private bool canFly;
     private float t;
     private float displacement;
-    Vector3 startPos;
+    SpriteRenderer headSprite;
+    public Vector3 startPos;
+
+    private void Start()
+    {
+        headSprite = GetComponent<SpriteRenderer>();
+    }
 
     private void OnEnable()
     {
-        startPos = new Vector3(player.gameObject.transform.position.x + 1.5f, player.gameObject.transform.position.y + 15f, player.gameObject.transform.position.z);
+        headSprite.enabled = false;
+        jumpDir = player.parameter.inputHandler.jumpDir;
+        //startPos = new Vector3(player.gameObject.transform.position.x, player.gameObject.transform.position.y + 16.5f, player.gameObject.transform.position.z);
         t = 0;
     }
 
@@ -29,8 +38,10 @@ public class CatHead : MonoBehaviour
     {
         if(player.parameter.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f)
         {
-            jumpDir = player.parameter.inputHandler.jumpDir;
             canFly = true;
+            headSprite.enabled = true;
+            player.parameter.leftShape.SetActive(true);
+            player.parameter.rightShape.SetActive(true);
         }
         Fly();
     }
@@ -73,10 +84,12 @@ public class CatHead : MonoBehaviour
                 transform.position = new Vector3(startPos.x + displacement, startPos.y, startPos.z);
             }
         }
-        else
+        else if(canFly && t > 1f)
         {
             t = 0;
             canFly = false;
+            player.parameter.leftShape.SetActive(false);
+            player.parameter.rightShape.SetActive(false);
             player.parameter.jumpFinished = true;
         }
     }

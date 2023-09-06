@@ -26,6 +26,8 @@ public class PlayerParameter        //player's data
     //jump related
     public Vector2 jumpPos;
     public bool jumpFinished;   //Use to change state;
+    public bool inJumpState;    //Use to forbid the FaceFlip
+    public GameObject leftShape, rightShape;
 
     //test
     public GameObject circleLoop;
@@ -58,6 +60,8 @@ public class PlayerFSM : MonoBehaviour
         states.Add(StateType.Jump, new JumpState(this));
 
         parameter.catHead.SetActive(false);
+        parameter.leftShape.SetActive(false);
+        parameter.rightShape.SetActive(false);
 
         //Attach to player's component
         parameter.rb = GetComponent<Rigidbody2D>();
@@ -111,7 +115,7 @@ public class PlayerFSM : MonoBehaviour
 
     public void FlipDirection()
     {
-        if (parameter.direction != 0)
+        if (parameter.direction != 0 && !parameter.inJumpState)
         {
             gameObject.transform.localScale = new Vector3(-parameter.direction, 1, 1);
         }
