@@ -148,7 +148,7 @@ public class JumpState : IPlayerState
     {
         if (parameter.jumpFinished)
         {
-            if (parameter.canMove)
+            if (parameter.inputHandler.MovementInput.x != 0)
             {
                 parameter.inputHandler.jumpDir = JumpInput.None;
                 manager.TransitionState(StateType.Move);

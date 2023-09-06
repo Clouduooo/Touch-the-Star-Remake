@@ -16,6 +16,9 @@ public class CatHead : MonoBehaviour
     private float displacement;
     SpriteRenderer headSprite;
     public Vector3 startPos;
+    private bool prepareAnimationOver;
+
+    [SerializeField] Transform head_left, head_right, leg_left, leg_right;
 
     private void Awake()
     {
@@ -26,24 +29,29 @@ public class CatHead : MonoBehaviour
     {
         headSprite.enabled = false;
         jumpDir = player.parameter.inputHandler.jumpDir;
-        //startPos = new Vector3(player.gameObject.transform.position.x, player.gameObject.transform.position.y + 16.5f, player.gameObject.transform.position.z);
         t = 0;
     }
 
     private void OnDisable()
     {
+        player.parameter.leftShape.SetActive(false);
+        player.parameter.rightShape.SetActive(false);
         canFly = false;
+        prepareAnimationOver = false;
     }
 
     private void Update()
     {
-        if(player.parameter.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.75f)
+        // if prepareAnimation hasn't over, into this if
+        if (!prepareAnimationOver && player.parameter.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.8f)
         {
             canFly = true;
             headSprite.enabled = true;
             player.parameter.leftShape.SetActive(true);
             player.parameter.rightShape.SetActive(true);
+            prepareAnimationOver = true;   //set opposite, make sure this "if" can only in at a time
         }
+
         Fly();
     }
 
@@ -56,8 +64,8 @@ public class CatHead : MonoBehaviour
             {
                 canFly = false;
                 collidePos = transform.position;
-                transform.SetParent(collision.transform, false);
-                Debug.Log("Enter Collider");
+                transform.SetParent(collision.transform, true);     //let head maintain its world position!
+                //Debug.Log("fly!");
                 StartCoroutine(CatFly());   //Fly cat to the postion of head
             }
         }
@@ -65,7 +73,7 @@ public class CatHead : MonoBehaviour
 
     void Fly()
     {
-        if(canFly && t <= 1f)      //Manually set the flying duration as 1f in the flyingCurve!
+        if(canFly && t <= 10f)      //Manually set the flying duration as 10f in the flyingCurve!
         {
             t += Time.deltaTime;
             displacement = flyingCurve.Evaluate(t);
@@ -86,42 +94,50 @@ public class CatHead : MonoBehaviour
                 transform.position = new Vector3(startPos.x + displacement, startPos.y, startPos.z);
             }
         }
-        else if(canFly && t > 1f)
+        else if(canFly && t > 10f)      //if head collide with nothing, fly back and leave JumpState!
         {
             Debug.Log("into!");
             t = 0;
-            canFly = false;
+            //canFly = false;
             player.parameter.leftShape.SetActive(false);
             player.parameter.rightShape.SetActive(false);
-            player.parameter.jumpFinished = true;
+            player.parameter.jumpFinished = true;           //this is the value to evaluate whether StateMachine change state
         }
     }
 
     IEnumerator CatFly()
     {
         t = 0f;
-        while(Vector3.Distance(player.transform.position, collidePos) >= 2f)
+        while(Vector3.Distance(head_left.position, leg_left.position) >= 2.5f || Vector3.Distance(head_right.position, leg_right.position) >= 2f)
         {
             t += Time.deltaTime;
             displacement = flyingCurve.Evaluate(t);
             switch(jumpDir)
             {
                 case JumpInput.Up :
-                    player.transform.position = new Vector3(startPos.x, startPos.y + displacement, startPos.z);
+                    player.transform.position = new Vector3(player.transform.position.x, player.transform.position.y + displacement, player.transform.position.z);
                     break;
                 case JumpInput.Down :
-                    player.transform.position = new Vector3(startPos.x, startPos.y - displacement, startPos.z);
+                    player.transform.position = new Vector3(player.transform.position.x, player.transform.position.y - displacement, player.transform.position.z);
                     break; 
                 case JumpInput.Left :
-                    player.transform.position = new Vector3(startPos.x - displacement, startPos.y, startPos.z);
+                    player.transform.position = new Vector3(player.transform.position.x - displacement, player.transform.position.y, player.transform.position.z);
                     break;
                 case JumpInput.Right :
-                    player.transform.position = new Vector3(startPos.x + displacement, startPos.y, startPos.z);
+                    player.transform.position = new Vector3(player.transform.position.x + displacement, player.transform.position.y, player.transform.position.z);
                     break;
             }
             yield return null;
         }
+
         player.parameter.animator.Play("Jump_Rolling");
+
+        while (player.parameter.animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f)
+        {
+            Debug.Log(player.parameter.animator.GetCurrentAnimatorStateInfo(0).normalizedTime);
+            yield return null;
+        }
+        player.transform.position = collidePos;
         //TODD: Check if animation is over, set head unactive and change state
         switch (jumpDir)
         {
@@ -135,6 +151,7 @@ public class CatHead : MonoBehaviour
                 player.parameter.platformDir = PlatformDirType.Left; break;
         }
         player.transform.Rotate(0, 0, -180);    //rotate flip
-        //transform.SetParent(player.transform, false);   //set head's parent back to cat! 
+        transform.SetParent(player.transform, true);   //set head's parent back to cat!
+        player.parameter.jumpFinished = true;      //tell machine to exit JumpState!
     }
 }
