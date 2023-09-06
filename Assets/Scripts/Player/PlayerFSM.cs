@@ -10,6 +10,11 @@ public enum StateType
     Idle, Move, Jump
 }
 
+public enum PlatformDirType
+{
+    Up, Down, Left, Right
+}
+
 [Serializable]
 public class PlayerParameter        //player's data
 {
@@ -28,6 +33,9 @@ public class PlayerParameter        //player's data
     public bool jumpFinished;   //Use to change state;
     public bool inJumpState;    //Use to forbid the FaceFlip
     public GameObject leftShape, rightShape;
+
+    //The direction of platform player is on
+    public PlatformDirType platformDir;
 
     //test
     public GameObject circleLoop;
@@ -117,7 +125,21 @@ public class PlayerFSM : MonoBehaviour
     {
         if (parameter.direction != 0 && !parameter.inJumpState)
         {
-            gameObject.transform.localScale = new Vector3(-parameter.direction, 1, 1);
+            switch (parameter.platformDir)
+            {
+                case PlatformDirType.Up:
+                    gameObject.transform.localScale = new Vector3(-parameter.direction, 1, 1);
+                    break;
+                case PlatformDirType.Down:
+                    gameObject.transform.localScale = new Vector3(parameter.direction, 1, 1);
+                    break;
+                //case PlatformDirType.Left:
+                //    gameObject.transform.localScale = new Vector3(-parameter.direction, 1, 1);
+                //    break;
+                //case PlatformDirType.Right:
+                //    gameObject.transform.localScale = new Vector3(-parameter.direction, 1, 1);
+                //    break;
+            }
         }
     }
 

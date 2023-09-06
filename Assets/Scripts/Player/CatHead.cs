@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Reflection;
 using UnityEngine;
 
 public class CatHead : MonoBehaviour
@@ -54,9 +55,10 @@ public class CatHead : MonoBehaviour
             if (tileManager.SearchColor(collidePos))
             {
                 canFly = false;
-                //player.parameter.animator.Play("Jump_Rolling");
                 collidePos = transform.position;
                 transform.SetParent(collision.transform, false);
+                Debug.Log("Enter Collider");
+                StartCoroutine(CatFly());   //Fly cat to the postion of head
             }
         }
     }
@@ -86,11 +88,53 @@ public class CatHead : MonoBehaviour
         }
         else if(canFly && t > 1f)
         {
+            Debug.Log("into!");
             t = 0;
             canFly = false;
             player.parameter.leftShape.SetActive(false);
             player.parameter.rightShape.SetActive(false);
             player.parameter.jumpFinished = true;
         }
+    }
+
+    IEnumerator CatFly()
+    {
+        t = 0f;
+        while(Vector3.Distance(player.transform.position, collidePos) >= 2f)
+        {
+            t += Time.deltaTime;
+            displacement = flyingCurve.Evaluate(t);
+            switch(jumpDir)
+            {
+                case JumpInput.Up :
+                    player.transform.position = new Vector3(startPos.x, startPos.y + displacement, startPos.z);
+                    break;
+                case JumpInput.Down :
+                    player.transform.position = new Vector3(startPos.x, startPos.y - displacement, startPos.z);
+                    break; 
+                case JumpInput.Left :
+                    player.transform.position = new Vector3(startPos.x - displacement, startPos.y, startPos.z);
+                    break;
+                case JumpInput.Right :
+                    player.transform.position = new Vector3(startPos.x + displacement, startPos.y, startPos.z);
+                    break;
+            }
+            yield return null;
+        }
+        player.parameter.animator.Play("Jump_Rolling");
+        //TODD: Check if animation is over, set head unactive and change state
+        switch (jumpDir)
+        {
+            case JumpInput.Up :
+                player.parameter.platformDir = PlatformDirType.Down; break;
+            case JumpInput.Down :
+                player.parameter.platformDir = PlatformDirType.Up; break;
+            case JumpInput.Left :
+                player.parameter.platformDir = PlatformDirType.Right; break;
+            case JumpInput.Right :
+                player.parameter.platformDir = PlatformDirType.Left; break;
+        }
+        player.transform.Rotate(0, 0, -180);    //rotate flip
+        //transform.SetParent(player.transform, false);   //set head's parent back to cat! 
     }
 }
