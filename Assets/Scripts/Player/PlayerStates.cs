@@ -56,7 +56,7 @@ public class MoveState : IPlayerState
     }
     public void OnEnter()
     {
-        parameter.animator.Play("Idle");
+        parameter.animator.Play("Run");
     }
 
     public void OnExit()
@@ -94,9 +94,9 @@ public class MoveState : IPlayerState
 
         if(parameter.direction != 0 && parameter.initCD >= parameter.cdTime)
         {
-            parameter.extendDuration = 2f;      //Set time duration of circle loop while moving on platform
-            GameObject.Instantiate(parameter.circleLoop, parameter.rayPoint_front.transform.position, Quaternion.identity);
-            //GameObject.Instantiate(parameter.circleLoop, manager.transform.position, Quaternion.identity);
+            parameter.extendDuration = 0.8f;      //Set time duration of circle loop while moving on platform
+            //GameObject.Instantiate(parameter.circleLoop, parameter.rayPoint_front.transform.position, Quaternion.identity);
+            GameObject.Instantiate(parameter.circleLoop, manager.transform.position, Quaternion.identity);
             parameter.initCD = 0;
         }
 

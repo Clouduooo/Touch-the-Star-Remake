@@ -40,7 +40,7 @@ public class CircleLoop : MonoBehaviour
         {
             middlePos = transform.position;
             t += Time.deltaTime;
-            radius = lightTileCurve.Evaluate(t) * 15;        
+            radius = lightTileCurve.Evaluate(t) * 20;        
             transform.localScale = new Vector3(radius/2.0f, radius/2.0f, radius/2.0f);
             if (t >= player.parameter.extendDuration - 1f)         
             {
