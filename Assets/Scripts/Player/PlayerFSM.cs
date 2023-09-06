@@ -37,13 +37,11 @@ public class PlayerParameter        //player's data
     //The direction of platform player is on
     public PlatformDirType platformDir;
 
-    //test
-    public GameObject circleLoop;
-
-    //test for instantiate circle loop
+    //ObjectPool related to use circle loop
     public float extendDuration;
     public float initCD;
     public float cdTime;
+    public CircleObjectPool circleObjectPool;
 
     //Raycast Checking parameter
     public Transform rayPoint_front;
@@ -74,8 +72,8 @@ public class PlayerFSM : MonoBehaviour
         //Attach to player's component
         parameter.rb = GetComponent<Rigidbody2D>();
         parameter.inputHandler = GetComponent<PlayerInputHandler>();
-        Debug.Log(parameter.inputHandler);
         parameter.animator = GetComponentInChildren<Animator>();
+        parameter.circleObjectPool = GetComponent<CircleObjectPool>();
 
         //Initialize all tiles with alpha = 0
         parameter.bounds = parameter.lightTile.cellBounds;

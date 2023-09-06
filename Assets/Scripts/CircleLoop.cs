@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -16,6 +17,7 @@ public class CircleLoop : MonoBehaviour
     [SerializeField] AnimationCurve lightTileCurve;
     [SerializeField] AnimationCurve fadeCurve;
     TileManager tileManager;
+    public Action backToPool;       //boardcast the action to put this gameobject back to objectpool
 
     private void Start()
     {
@@ -53,6 +55,7 @@ public class CircleLoop : MonoBehaviour
         {
             //change after the function of objectpool
             //Destroy(gameObject);
+            backToPool.Invoke();    //boardcast the action
         }
     }
 }
