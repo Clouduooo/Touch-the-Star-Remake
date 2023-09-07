@@ -23,6 +23,7 @@ public class CatHead : MonoBehaviour
     private void Awake()
     {
         headSprite = GetComponent<SpriteRenderer>();
+        gameObject.GetComponent<BoxCollider2D>().enabled = false;
     }
 
     private void OnEnable()
@@ -49,6 +50,7 @@ public class CatHead : MonoBehaviour
             headSprite.enabled = true;
             player.parameter.leftShape.SetActive(true);
             player.parameter.rightShape.SetActive(true);
+            gameObject.GetComponent<BoxCollider2D>().enabled = true;
             prepareAnimationOver = true;   //set opposite, make sure this "if" can only in at a time
         }
 
@@ -59,16 +61,16 @@ public class CatHead : MonoBehaviour
     {
         if (collision.CompareTag("LightTile"))
         {
-            Debug.Log("trigger");
+            //Debug.Log("trigger");
             collidePos = collision.ClosestPoint(transform.position);
             if (tileManager.SearchColor(collidePos))
             {
                 canFly = false;
+                gameObject.GetComponent<BoxCollider2D>().enabled = false;   //Close head's collider
                 //collidePos = transform.position;
                 Debug.DrawRay(collidePos,Vector2.up*5,Color.red,100000);
                 Debug.DrawRay(collidePos,Vector2.left*5,Color.red,100000);
                 transform.SetParent(collision.transform, true);     //let head maintain its world position!
-                //Debug.Log("fly!");
                 StartCoroutine(CatFly());   //Fly cat to the postion of head
             }
         }
@@ -76,7 +78,7 @@ public class CatHead : MonoBehaviour
 
     void Fly()
     {
-        if(canFly && t <= 0.5f)      //Manually set the flying duration as 1f in the flyingCurve!
+        if(canFly && t <= 10f)      //Manually set the flying duration as 1f in the flyingCurve!
         {
             t += Time.deltaTime;
             displacement = flyingCurve.Evaluate(t);
@@ -97,7 +99,7 @@ public class CatHead : MonoBehaviour
                 transform.position = new Vector3(startPos.x + displacement, startPos.y, startPos.z);
             }
         }
-        else if(canFly && t > 0.5f)      //if head collide with nothing, fly back and leave JumpState!
+        else if(canFly && t > 10f)      //if head collide with nothing, fly back and leave JumpState!
         {
             t = 0;
             //canFly = false;
@@ -110,7 +112,7 @@ public class CatHead : MonoBehaviour
     IEnumerator CatFly()
     {
         t = 0f;
-        while(Vector3.Distance(head_left.position, leg_left.position) >= 25f || Vector3.Distance(head_right.position, leg_right.position) >= 25f)
+        while(Vector3.Distance(head_left.position, leg_left.position) >= 5f || Vector3.Distance(head_right.position, leg_right.position) >= 5f)
         {
             t += Time.deltaTime;
             displacement = flyingCurve.Evaluate(t);
@@ -171,7 +173,10 @@ public class CatHead : MonoBehaviour
                 // player.transform.Rotate(0, 0, 90);    //rotate flip
                 break;
         }
+
         transform.SetParent(player.transform, true);   //set head's parent back to cat!
+        //Debug.Log(transform.parent.name);
+        yield return null;
         player.parameter.jumpFinished = true;      //tell machine to exit JumpState!
     }
 }
