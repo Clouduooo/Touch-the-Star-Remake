@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 using UnityEngine.Tilemaps;
 
 public enum StateType
@@ -104,6 +106,7 @@ public class PlayerFSM : MonoBehaviour
     void Update()
     {
         parameter.initCD += Time.deltaTime; 
+        ChangeInputValue();
         FlipDirection();
         RacastCheck();
         currentState.OnUpdate();
@@ -123,27 +126,28 @@ public class PlayerFSM : MonoBehaviour
     {
         if (parameter.direction != 0 && !parameter.inJumpState)
         {
-            switch (parameter.platformDir)
-            {
-                case PlatformDirType.Up:
-                    gameObject.transform.localScale = new Vector3(-parameter.direction, 1, 1);
-                    break;
-                case PlatformDirType.Down:
-                    gameObject.transform.localScale = new Vector3(parameter.direction, 1, 1);
-                    break;
+            gameObject.transform.localScale = new Vector3(-parameter.direction, 1, 1);
+            // switch (parameter.platformDir)
+            // {
+            //     case PlatformDirType.Up:
+            //         gameObject.transform.localScale = new Vector3(-parameter.direction, 1, 1);
+            //         break;
+            //     case PlatformDirType.Down:
+            //         gameObject.transform.localScale = new Vector3(parameter.direction, 1, 1);
+            //         break;
                 //case PlatformDirType.Left:
                 //    gameObject.transform.localScale = new Vector3(-parameter.direction, 1, 1);
                 //    break;
                 //case PlatformDirType.Right:
                 //    gameObject.transform.localScale = new Vector3(-parameter.direction, 1, 1);
                 //    break;
-            }
+            //}
         }
     }
 
     void AddSpeed()
     {
-        parameter.rb.velocity = parameter.speed;
+        parameter.rb.velocity = transform.rotation*parameter.speed;
     }
 
     //Raycast Checking Function
@@ -162,6 +166,36 @@ public class PlayerFSM : MonoBehaviour
         {
             parameter.canMove = true;
         }
+    }
+
+    void ChangeInputValue()
+    {
+        parameter.inputHandler.AdjustedMovementDir=Vector2Int.RoundToInt(Quaternion.Euler(transform.rotation.eulerAngles.x,transform.rotation.eulerAngles.y,-transform.rotation.eulerAngles.z)*parameter.inputHandler.MovementInput);
+        Vector2Int AdjustedJumpDir=new(0,0);
+        switch(parameter.inputHandler.jumpDir)
+        {
+            case JumpInput.Up:
+                AdjustedJumpDir=new(0,1);
+                break;
+            case JumpInput.Down:
+                AdjustedJumpDir=new(0,-1);
+                break;
+            case JumpInput.Left:
+                AdjustedJumpDir=new(-1,0);
+                break;
+            case JumpInput.Right:
+                AdjustedJumpDir=new(1,0);
+                break;
+        }
+        AdjustedJumpDir=Vector2Int.RoundToInt(Quaternion.Euler(transform.rotation.eulerAngles.x,transform.rotation.eulerAngles.y,-transform.rotation.eulerAngles.z)*(Vector2)AdjustedJumpDir);
+        parameter.inputHandler.AdjustedJumpDir = (AdjustedJumpDir.x, AdjustedJumpDir.y) switch
+        {
+            (0, 1) => JumpInput.Up,
+            (0, -1) => JumpInput.Down,
+            (-1, 0) => JumpInput.Left,
+            (1, 0) => JumpInput.Right,
+            _ => JumpInput.None,
+        };
     }
 
     void OnDrawGizmos()    //Show raycast in editor mode

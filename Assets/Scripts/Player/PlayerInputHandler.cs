@@ -11,7 +11,9 @@ public enum JumpInput
 public class PlayerInputHandler : MonoBehaviour
 {
     public Vector2 MovementInput { get; private set; }  //Only read outside the class, write inside
+    public Vector2Int AdjustedMovementDir;
     public JumpInput jumpDir;
+    public JumpInput AdjustedJumpDir;
 
     private void Start()
     {

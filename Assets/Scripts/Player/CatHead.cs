@@ -112,7 +112,6 @@ public class CatHead : MonoBehaviour
         t = 0f;
         while(Vector3.Distance(head_left.position, leg_left.position) >= 25f || Vector3.Distance(head_right.position, leg_right.position) >= 25f)
         {
-            Debug.Log(leg_left.position);
             t += Time.deltaTime;
             displacement = flyingCurve.Evaluate(t);
             switch(jumpDir)
@@ -150,15 +149,28 @@ public class CatHead : MonoBehaviour
         switch (jumpDir)
         {
             case JumpInput.Up :
-                player.parameter.platformDir = PlatformDirType.Down; break;
+                player.parameter.platformDir = PlatformDirType.Down;
+                player.transform.rotation=Quaternion.Euler(0,0,-180);
+                // player.transform.Rotate(0, 0, -180);    //rotate flip
+                player.transform.localScale=new(-player.transform.localScale.x,player.transform.localScale.y,player.transform.localScale.z);
+                break;
             case JumpInput.Down :
-                player.parameter.platformDir = PlatformDirType.Up; break;
+                player.parameter.platformDir = PlatformDirType.Up;
+                player.transform.rotation=Quaternion.Euler(0,0,0);
+                // player.transform.Rotate(0, 0, -180);    //rotate flip
+                player.transform.localScale=new(-player.transform.localScale.x,player.transform.localScale.y,player.transform.localScale.z);
+                break;
             case JumpInput.Left :
-                player.parameter.platformDir = PlatformDirType.Right; break;
+                player.parameter.platformDir = PlatformDirType.Right;
+                player.transform.rotation=Quaternion.Euler(0,0,-90);
+                // player.transform.Rotate(0, 0, -90);    //rotate flip
+                break;
             case JumpInput.Right :
-                player.parameter.platformDir = PlatformDirType.Left; break;
+                player.parameter.platformDir = PlatformDirType.Left;
+                player.transform.rotation=Quaternion.Euler(0,0,90);
+                // player.transform.Rotate(0, 0, 90);    //rotate flip
+                break;
         }
-        player.transform.Rotate(0, 0, -180);    //rotate flip
         transform.SetParent(player.transform, true);   //set head's parent back to cat!
         player.parameter.jumpFinished = true;      //tell machine to exit JumpState!
     }

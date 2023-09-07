@@ -31,11 +31,11 @@ public class IdleState : IPlayerState
 
     public void OnUpdate()
     {
-        if(parameter.inputHandler.jumpDir != JumpInput.None)
+        if(parameter.inputHandler.AdjustedJumpDir != JumpInput.None)
         {
             manager.TransitionState(StateType.Jump);
         }
-        else if(parameter.inputHandler.MovementInput.x != 0)     //if press move button
+        else if(parameter.inputHandler.AdjustedMovementDir.x != 0)     //if press move button
         {
             manager.TransitionState(StateType.Move);
         }
@@ -67,7 +67,7 @@ public class MoveState : IPlayerState
     public void OnUpdate()
     {
         DetectMove();
-        if(parameter.inputHandler.jumpDir != JumpInput.None)
+        if(parameter.inputHandler.AdjustedJumpDir != JumpInput.None)
         {
             manager.TransitionState(StateType.Jump);
         }
@@ -79,11 +79,11 @@ public class MoveState : IPlayerState
 
     void DetectMove()
     {
-        if(parameter.inputHandler.MovementInput.x > 0)
+        if(parameter.inputHandler.AdjustedMovementDir.x > 0)
         {
             parameter.direction = 1;
         }
-        else if(parameter.inputHandler.MovementInput.x < 0)
+        else if(parameter.inputHandler.AdjustedMovementDir.x < 0)
         {
             parameter.direction = -1;
         }
@@ -131,6 +131,10 @@ public class JumpState : IPlayerState
     private PlayerFSM manager;
     private PlayerParameter parameter;
 
+    readonly private Vector3 vertStartPos=new(0,16.5f,0);
+    readonly private Vector3 rightStartPos=new(12.6f,6.2f,0);
+    readonly private Vector3 leftStartPos=new(-12.6f,6.2f,0);
+
     public JumpState(PlayerFSM manager)  //Get reference of PlayerFSM and Player Data from Initiate Function
     {
         this.manager = manager;
@@ -152,7 +156,7 @@ public class JumpState : IPlayerState
     {
         if (parameter.jumpFinished)
         {
-            if (parameter.inputHandler.MovementInput.x != 0)
+            if (parameter.inputHandler.AdjustedMovementDir.x != 0)
             {
                 parameter.inputHandler.jumpDir = JumpInput.None;
                 manager.TransitionState(StateType.Move);
@@ -169,37 +173,38 @@ public class JumpState : IPlayerState
     {
         parameter.inJumpState = true;
 
-        if (parameter.inputHandler.jumpDir == JumpInput.Up)
+        if (parameter.inputHandler.AdjustedJumpDir == JumpInput.Up)
         {
             parameter.catHead.transform.localRotation = Quaternion.Euler(0, 0, 0);
             parameter.catHead.transform.localScale = new Vector3(40, 40, 40);
-            parameter.catHead.GetComponent<CatHead>().startPos = new Vector3(manager.transform.position.x, manager.transform.position.y + 16.5f, manager.transform.position.z);
+            // parameter.catHead.GetComponent<CatHead>().startPos = new Vector3(manager.transform.position.x, manager.transform.position.y + 16.5f, manager.transform.position.z);
+            parameter.catHead.GetComponent<CatHead>().startPos = manager.transform.position+manager.transform.rotation*vertStartPos;
             parameter.animator.Play("Jump_Prepare_Verticle");
         }
-        else if(parameter.inputHandler.jumpDir == JumpInput.Down)
+        else if(parameter.inputHandler.AdjustedJumpDir == JumpInput.Down)
         {
             parameter.catHead.transform.localRotation = Quaternion.Euler(0, 0, 180);
             parameter.catHead.transform.localScale = new Vector3(40, 40, 40);
-            parameter.catHead.GetComponent<CatHead>().startPos = new Vector3(manager.transform.position.x, manager.transform.position.y + 16.5f, manager.transform.position.z);
+            // parameter.catHead.GetComponent<CatHead>().startPos = new Vector3(manager.transform.position.x, manager.transform.position.y + 16.5f, manager.transform.position.z);
+            parameter.catHead.GetComponent<CatHead>().startPos = manager.transform.position+manager.transform.rotation*vertStartPos;
             parameter.animator.Play("Jump_Prepare_Verticle");
         }
-        else if(parameter.inputHandler.jumpDir == JumpInput.Left)
+        else if(parameter.inputHandler.AdjustedJumpDir == JumpInput.Left)
         {
             manager.transform.localScale = new Vector3(1, 1, 1);
             parameter.catHead.transform.localRotation = Quaternion.Euler(0, 0, 90);
             parameter.catHead.transform.localScale = new Vector3(40, 40, 40);
-            parameter.catHead.GetComponent<CatHead>().startPos = new Vector3(manager.transform.position.x - 12.6f, manager.transform.position.y + 6.2f, manager.transform.position.z);
+            // parameter.catHead.GetComponent<CatHead>().startPos = new Vector3(manager.transform.position.x - 12.6f, manager.transform.position.y + 6.2f, manager.transform.position.z);
+            parameter.catHead.GetComponent<CatHead>().startPos = manager.transform.position+manager.transform.rotation*leftStartPos;
             parameter.animator.Play("Jump_Prepare_Horizontal");
         }
-        else if (parameter.inputHandler.jumpDir == JumpInput.Right)
+        else if (parameter.inputHandler.AdjustedJumpDir == JumpInput.Right)
         {
             manager.transform.localScale = new Vector3(-1, 1, 1);
             parameter.catHead.transform.localRotation = Quaternion.Euler(0, 0, 90);
             parameter.catHead.transform.localScale = new Vector3(40, 40, 40);
-            Vector3 tempPos = parameter.leftShape.transform.position;
-            parameter.leftShape.transform.position = parameter.rightShape.transform.position;
-            parameter.rightShape.transform.position = tempPos;
-            parameter.catHead.GetComponent<CatHead>().startPos = new Vector3(manager.transform.position.x + 12.6f, manager.transform.position.y + 6.2f, manager.transform.position.z);
+            // parameter.catHead.GetComponent<CatHead>().startPos = new Vector3(manager.transform.position.x + 12.6f, manager.transform.position.y + 6.2f, manager.transform.position.z);
+            parameter.catHead.GetComponent<CatHead>().startPos = manager.transform.position+manager.transform.rotation*rightStartPos;
             parameter.animator.Play("Jump_Prepare_Horizontal");
         }
         parameter.catHead.SetActive(true);
