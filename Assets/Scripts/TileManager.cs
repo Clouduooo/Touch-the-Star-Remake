@@ -13,7 +13,7 @@ public class TileManager : MonoBehaviour
     public bool SearchColor(Vector3 worldPos)
     {
         Vector3Int pos = grid.WorldToCell(worldPos);
-        if(lightTile.GetColor(pos).a == 1f)
+        if (lightTile.GetColor(pos).a == 1f)
         {
             return true;
         }

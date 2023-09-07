@@ -110,7 +110,12 @@ public class MoveState : IPlayerState
                 parameter.speed = new Vector2(parameter.moveCurve.Evaluate(parameter.moveTime) * parameter.direction * 1.5f, 0);
                 //parameter.speed = new Vector2(55f * parameter.direction, 0);
                 parameter.moveTime += Time.deltaTime;
-            }else if(parameter.direction == 0)
+            }
+            else if(parameter.direction != 0 && parameter.moveTime >= 0.6f)
+            {
+                parameter.speed = new Vector2(parameter.moveCurve.Evaluate(1f) * parameter.direction * 1.5f, 0);
+            }
+            else if(parameter.direction == 0)
             {
                 parameter.moveTime = 0;
                 parameter.speed = new Vector2(0, 0);
@@ -173,6 +178,11 @@ public class JumpState : IPlayerState
     {
         parameter.inJumpState = true;
 
+        if (parameter.inputHandler.AdjustedJumpDir == JumpInput.Down)
+        {
+            parameter.jumpFinished = true;      //change state
+        }
+
         if (parameter.inputHandler.AdjustedJumpDir == JumpInput.Up)
         {
             parameter.catHead.transform.localRotation = Quaternion.Euler(0, 0, 0);
@@ -180,15 +190,16 @@ public class JumpState : IPlayerState
             // parameter.catHead.GetComponent<CatHead>().startPos = new Vector3(manager.transform.position.x, manager.transform.position.y + 16.5f, manager.transform.position.z);
             parameter.catHead.GetComponent<CatHead>().startPos = manager.transform.position+manager.transform.rotation*vertStartPos;
             parameter.animator.Play("Jump_Prepare_Verticle");
+            parameter.catHead.SetActive(true);
         }
-        else if(parameter.inputHandler.AdjustedJumpDir == JumpInput.Down)
-        {
-            parameter.catHead.transform.localRotation = Quaternion.Euler(0, 0, 180);
-            parameter.catHead.transform.localScale = new Vector3(40, 40, 40);
-            // parameter.catHead.GetComponent<CatHead>().startPos = new Vector3(manager.transform.position.x, manager.transform.position.y + 16.5f, manager.transform.position.z);
-            parameter.catHead.GetComponent<CatHead>().startPos = manager.transform.position+manager.transform.rotation*vertStartPos;
-            parameter.animator.Play("Jump_Prepare_Verticle");
-        }
+        //else if(parameter.inputHandler.AdjustedJumpDir == JumpInput.Down)
+        //{
+        //    parameter.catHead.transform.localRotation = Quaternion.Euler(0, 0, 180);
+        //    parameter.catHead.transform.localScale = new Vector3(40, 40, 40);
+        //    // parameter.catHead.GetComponent<CatHead>().startPos = new Vector3(manager.transform.position.x, manager.transform.position.y + 16.5f, manager.transform.position.z);
+        //    parameter.catHead.GetComponent<CatHead>().startPos = manager.transform.position+manager.transform.rotation*vertStartPos;
+        //    parameter.animator.Play("Jump_Prepare_Verticle");
+        //}
         else if(parameter.inputHandler.AdjustedJumpDir == JumpInput.Left)
         {
             manager.transform.localScale = new Vector3(1, 1, 1);
@@ -197,6 +208,7 @@ public class JumpState : IPlayerState
             // parameter.catHead.GetComponent<CatHead>().startPos = new Vector3(manager.transform.position.x - 12.6f, manager.transform.position.y + 6.2f, manager.transform.position.z);
             parameter.catHead.GetComponent<CatHead>().startPos = manager.transform.position+manager.transform.rotation*leftStartPos;
             parameter.animator.Play("Jump_Prepare_Horizontal");
+            parameter.catHead.SetActive(true);
         }
         else if (parameter.inputHandler.AdjustedJumpDir == JumpInput.Right)
         {
@@ -206,8 +218,8 @@ public class JumpState : IPlayerState
             // parameter.catHead.GetComponent<CatHead>().startPos = new Vector3(manager.transform.position.x + 12.6f, manager.transform.position.y + 6.2f, manager.transform.position.z);
             parameter.catHead.GetComponent<CatHead>().startPos = manager.transform.position+manager.transform.rotation*rightStartPos;
             parameter.animator.Play("Jump_Prepare_Horizontal");
+            parameter.catHead.SetActive(true);
         }
-        parameter.catHead.SetActive(true);
     }
 }
 #endregion

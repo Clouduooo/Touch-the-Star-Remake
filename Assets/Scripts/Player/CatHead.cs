@@ -35,8 +35,8 @@ public class CatHead : MonoBehaviour
 
     private void OnDisable()
     {
-        player.parameter.leftShape.SetActive(false);
-        player.parameter.rightShape.SetActive(false);
+        //player.parameter.leftShape.SetActive(false);
+        //player.parameter.rightShape.SetActive(false);
         canFly = false;
         prepareAnimationOver = false;
     }
@@ -61,12 +61,38 @@ public class CatHead : MonoBehaviour
     {
         if (collision.CompareTag("LightTile"))
         {
+            gameObject.GetComponent<BoxCollider2D>().enabled = false;   //Close head's collider
+
             //Debug.Log("trigger");
             collidePos = collision.ClosestPoint(transform.position);
-            if (tileManager.SearchColor(collidePos))
+            Vector3 coll_1 = collidePos;
+            Vector3 coll_2 = collidePos;
+            Vector3 coll_3 = collidePos;
+            Vector3 coll_4 = collidePos;
+
+            if (jumpDir == JumpInput.Up)
+            {
+                coll_1.y = Mathf.Round(collidePos.y) - 0.5f;
+                coll_2.y = Mathf.Round(collidePos.y) + 0.5f;
+            }
+            else if(jumpDir == JumpInput.Down)
+            {
+                coll_1.y = Mathf.Round(collidePos.y) - 0.5f;
+                coll_2.y = Mathf.Round(collidePos.y) + 0.5f;
+            }
+            else if(jumpDir == JumpInput.Left)
+            {
+                coll_1.x = Mathf.Round(collidePos.x) - 0.5f;
+                coll_2.x = Mathf.Round(collidePos.x) + 0.5f;
+            }else if(jumpDir == JumpInput.Right)
+            {
+                coll_1.x = Mathf.Round(collidePos.x) - 0.5f;
+                coll_2.x = Mathf.Round(collidePos.x) + 0.5f;
+            }
+
+            if (tileManager.SearchColor(coll_1) && tileManager.SearchColor(coll_2))
             {
                 canFly = false;
-                gameObject.GetComponent<BoxCollider2D>().enabled = false;   //Close head's collider
                 //collidePos = transform.position;
                 Debug.DrawRay(collidePos,Vector2.up*5,Color.red,100000);
                 Debug.DrawRay(collidePos,Vector2.left*5,Color.red,100000);
@@ -112,7 +138,7 @@ public class CatHead : MonoBehaviour
     IEnumerator CatFly()
     {
         t = 0f;
-        while(Vector3.Distance(head_left.position, leg_left.position) >= 5f || Vector3.Distance(head_right.position, leg_right.position) >= 5f)
+        while(Vector3.Distance(head_left.position, leg_left.position) >= 20f || Vector3.Distance(head_right.position, leg_right.position) >= 20f)
         {
             t += Time.deltaTime;
             displacement = flyingCurve.Evaluate(t);
@@ -136,6 +162,37 @@ public class CatHead : MonoBehaviour
 
         headSprite.enabled = false;
 
+        player.parameter.leftShape.SetActive(false);
+        player.parameter.rightShape.SetActive(false);
+
+        switch (jumpDir)
+        {
+            case JumpInput.Up:
+                player.parameter.platformDir = PlatformDirType.Down;
+                player.transform.rotation = Quaternion.Euler(0, 0, -180);
+                // player.transform.Rotate(0, 0, -180);    //rotate flip
+                player.transform.localScale = new(-player.transform.localScale.x, player.transform.localScale.y, player.transform.localScale.z);
+                break;
+            case JumpInput.Down:
+                player.parameter.platformDir = PlatformDirType.Up;
+                player.transform.rotation = Quaternion.Euler(0, 0, 0);
+                // player.transform.Rotate(0, 0, -180);    //rotate flip
+                player.transform.localScale = new(-player.transform.localScale.x, player.transform.localScale.y, player.transform.localScale.z);
+                break;
+            case JumpInput.Left:
+                player.parameter.platformDir = PlatformDirType.Right;
+                player.transform.rotation = Quaternion.Euler(0, 0, -90);
+                // player.transform.Rotate(0, 0, -90);    //rotate flip
+                break;
+            case JumpInput.Right:
+                player.parameter.platformDir = PlatformDirType.Left;
+                player.transform.rotation = Quaternion.Euler(0, 0, 90);
+                // player.transform.Rotate(0, 0, 90);    //rotate flip
+                break;
+        }
+
+        player.transform.position = collidePos;
+
         player.parameter.animator.Play("Jump_Rolling");
         yield return null;
 
@@ -146,33 +203,6 @@ public class CatHead : MonoBehaviour
         
         //TODO:Play the audio of landing
 
-        player.transform.position = collidePos;
-        //TODD: Check if animation is over, set head unactive and change state
-        switch (jumpDir)
-        {
-            case JumpInput.Up :
-                player.parameter.platformDir = PlatformDirType.Down;
-                player.transform.rotation=Quaternion.Euler(0,0,-180);
-                // player.transform.Rotate(0, 0, -180);    //rotate flip
-                player.transform.localScale=new(-player.transform.localScale.x,player.transform.localScale.y,player.transform.localScale.z);
-                break;
-            case JumpInput.Down :
-                player.parameter.platformDir = PlatformDirType.Up;
-                player.transform.rotation=Quaternion.Euler(0,0,0);
-                // player.transform.Rotate(0, 0, -180);    //rotate flip
-                player.transform.localScale=new(-player.transform.localScale.x,player.transform.localScale.y,player.transform.localScale.z);
-                break;
-            case JumpInput.Left :
-                player.parameter.platformDir = PlatformDirType.Right;
-                player.transform.rotation=Quaternion.Euler(0,0,-90);
-                // player.transform.Rotate(0, 0, -90);    //rotate flip
-                break;
-            case JumpInput.Right :
-                player.parameter.platformDir = PlatformDirType.Left;
-                player.transform.rotation=Quaternion.Euler(0,0,90);
-                // player.transform.Rotate(0, 0, 90);    //rotate flip
-                break;
-        }
 
         transform.SetParent(player.transform, true);   //set head's parent back to cat!
         //Debug.Log(transform.parent.name);
