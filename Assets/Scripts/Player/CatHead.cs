@@ -78,7 +78,7 @@ public class CatHead : MonoBehaviour
 
     void Fly()
     {
-        if(canFly && t <= 10f)      //Manually set the flying duration as 1f in the flyingCurve!
+        if(canFly && t <= 0.5f)      //Manually set the flying duration as 0.5f in the flyingCurve!
         {
             t += Time.deltaTime;
             displacement = flyingCurve.Evaluate(t);
@@ -99,7 +99,7 @@ public class CatHead : MonoBehaviour
                 transform.position = new Vector3(startPos.x + displacement, startPos.y, startPos.z);
             }
         }
-        else if(canFly && t > 10f)      //if head collide with nothing, fly back and leave JumpState!
+        else if(canFly && t > 0.5f)      //if head collide with nothing, fly back and leave JumpState!
         {
             t = 0;
             //canFly = false;
