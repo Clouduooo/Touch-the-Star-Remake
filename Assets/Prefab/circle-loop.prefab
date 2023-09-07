@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3217309559630250004}
   - component: {fileID: 6169845174389380574}
   - component: {fileID: 8139970839972896973}
+  - component: {fileID: 1144602081267070212}
   m_Layer: 0
   m_Name: circle-loop
   m_TagString: CircleLoop
@@ -171,3 +172,16 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1144602081267070212
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3217309559630250003}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 061638c4debf60b4fb4b0612f99fb859, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  circleLoop: {fileID: 0}

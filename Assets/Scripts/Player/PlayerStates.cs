@@ -96,7 +96,9 @@ public class MoveState : IPlayerState
         {
             parameter.extendDuration = 0.8f;      //Set time duration of circle loop while moving on platform
             //GameObject.Instantiate(parameter.circleLoop, parameter.rayPoint_front.transform.position, Quaternion.identity);
-            GameObject.Instantiate(parameter.circleLoop, manager.transform.position, Quaternion.identity);
+            //GameObject.Instantiate(parameter.circleLoop, manager.transform.position, Quaternion.identity);
+            // Use ObjectPool--Get Obeject!
+            parameter.circleObjectPool.C_Pool.Get();
             parameter.initCD = 0;
         }
 
