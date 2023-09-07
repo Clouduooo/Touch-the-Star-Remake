@@ -59,11 +59,14 @@ public class CatHead : MonoBehaviour
     {
         if (collision.CompareTag("LightTile"))
         {
-            collidePos = transform.position;
+            Debug.Log("trigger");
+            collidePos = collision.ClosestPoint(transform.position);
             if (tileManager.SearchColor(collidePos))
             {
                 canFly = false;
-                collidePos = transform.position;
+                //collidePos = transform.position;
+                Debug.DrawRay(collidePos,Vector2.up*5,Color.red,100000);
+                Debug.DrawRay(collidePos,Vector2.left*5,Color.red,100000);
                 transform.SetParent(collision.transform, true);     //let head maintain its world position!
                 //Debug.Log("fly!");
                 StartCoroutine(CatFly());   //Fly cat to the postion of head
@@ -107,8 +110,9 @@ public class CatHead : MonoBehaviour
     IEnumerator CatFly()
     {
         t = 0f;
-        while(Vector3.Distance(head_left.position, leg_left.position) >= 2.5f || Vector3.Distance(head_right.position, leg_right.position) >= 2.5f)
+        while(Vector3.Distance(head_left.position, leg_left.position) >= 25f || Vector3.Distance(head_right.position, leg_right.position) >= 25f)
         {
+            Debug.Log(leg_left.position);
             t += Time.deltaTime;
             displacement = flyingCurve.Evaluate(t);
             switch(jumpDir)
