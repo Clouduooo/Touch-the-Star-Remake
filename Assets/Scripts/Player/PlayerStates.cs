@@ -183,43 +183,99 @@ public class JumpState : IPlayerState
             parameter.jumpFinished = true;      //change state
         }
 
-        if (parameter.inputHandler.AdjustedJumpDir == JumpInput.Up)
+        switch (parameter.inputHandler.AdjustedJumpDir)
         {
-            parameter.catHead.transform.localRotation = Quaternion.Euler(0, 0, 0);
-            parameter.catHead.transform.localScale = new Vector3(40, 40, 40);
-            // parameter.catHead.GetComponent<CatHead>().startPos = new Vector3(manager.transform.position.x, manager.transform.position.y + 16.5f, manager.transform.position.z);
-            parameter.catHead.GetComponent<CatHead>().startPos = manager.transform.position+manager.transform.rotation*vertStartPos;
-            parameter.animator.Play("Jump_Prepare_Verticle");
-            parameter.catHead.SetActive(true);
+            case JumpInput.Up:
+                if(Physics2D.Raycast((Vector2)manager.transform.position, manager.transform.up, Mathf.Infinity, parameter.lightLayer) &&
+                    parameter.tileManager.SearchColor(new Vector3(Physics2D.Raycast((Vector2)manager.transform.position, manager.transform.up, Mathf.Infinity, parameter.lightLayer).point.x, Physics2D.Raycast((Vector2)manager.transform.position, manager.transform.up, Mathf.Infinity, parameter.lightLayer).point.y, 0)))
+                {
+                    parameter.jumpHit = Physics2D.Raycast((Vector2)manager.transform.position, Vector2.up, Mathf.Infinity, parameter.lightLayer);
+                    //Time.timeScale = 0f;
+                    parameter.catHead.transform.localRotation = Quaternion.Euler(0, 0, 0);
+                    parameter.catHead.transform.localScale = new Vector3(40, 40, 40);
+                    parameter.catHead.GetComponent<CatHead>().startPos = manager.transform.position + manager.transform.rotation * vertStartPos;
+                    parameter.animator.Play("Jump_Prepare_Verticle");
+                    parameter.catHead.SetActive(true);
+                    Debug.Log(parameter.jumpHit.point);
+                }
+                else
+                {
+                    parameter.jumpFinished = true;
+                }
+                break;
+
+            case JumpInput.Left:
+                if(Physics2D.Raycast((Vector2)manager.transform.position, -manager.transform.right, Mathf.Infinity, parameter.lightLayer) &&
+                    parameter.tileManager.SearchColor(new Vector3(Physics2D.Raycast((Vector2)manager.transform.position, -manager.transform.right, Mathf.Infinity, parameter.lightLayer).point.x, Physics2D.Raycast((Vector2)manager.transform.position, -manager.transform.right, Mathf.Infinity, parameter.lightLayer).point.y, 0)))
+                {
+                    parameter.jumpHit = Physics2D.Raycast((Vector2)manager.transform.position, -manager.transform.right, Mathf.Infinity, parameter.lightLayer);
+                    //Time.timeScale = 0f;
+                    manager.transform.localScale = new Vector3(1, 1, 1);
+                    parameter.catHead.transform.localRotation = Quaternion.Euler(0, 0, 90);
+                    parameter.catHead.transform.localScale = new Vector3(40, 40, 40);
+                    // parameter.catHead.GetComponent<CatHead>().startPos = new Vector3(manager.transform.position.x - 12.6f, manager.transform.position.y + 6.2f, manager.transform.position.z);
+                    parameter.catHead.GetComponent<CatHead>().startPos = manager.transform.position + manager.transform.rotation * leftStartPos;
+                    parameter.animator.Play("Jump_Prepare_Horizontal");
+                    parameter.catHead.SetActive(true);
+                    Debug.Log(parameter.jumpHit.point);
+                }
+                else
+                {
+                    parameter.jumpFinished = true;
+                }
+                break;
+
+            case JumpInput.Right:
+                if (Physics2D.Raycast((Vector2)manager.transform.position, manager.transform.right, Mathf.Infinity, parameter.lightLayer) &&
+                    parameter.tileManager.SearchColor(new Vector3(Physics2D.Raycast((Vector2)manager.transform.position, manager.transform.right, Mathf.Infinity, parameter.lightLayer).point.x, Physics2D.Raycast((Vector2)manager.transform.position, manager.transform.right, Mathf.Infinity, parameter.lightLayer).point.y, 0)))
+                {
+                    parameter.jumpHit = Physics2D.Raycast((Vector2)manager.transform.position, manager.transform.right, Mathf.Infinity, parameter.lightLayer);
+                    //Time.timeScale = 0f;
+                    manager.transform.localScale = new Vector3(-1, 1, 1);
+                    parameter.catHead.transform.localRotation = Quaternion.Euler(0, 0, 90);
+                    parameter.catHead.transform.localScale = new Vector3(40, 40, 40);
+                    // parameter.catHead.GetComponent<CatHead>().startPos = new Vector3(manager.transform.position.x + 12.6f, manager.transform.position.y + 6.2f, manager.transform.position.z);
+                    parameter.catHead.GetComponent<CatHead>().startPos = manager.transform.position + manager.transform.rotation * rightStartPos;
+                    parameter.animator.Play("Jump_Prepare_Horizontal");
+                    parameter.catHead.SetActive(true);
+                    Debug.Log(parameter.jumpHit.point);
+                }
+                else
+                {
+                    parameter.jumpFinished = true;
+                }
+                break;
         }
-        //else if(parameter.inputHandler.AdjustedJumpDir == JumpInput.Down)
+
+        //if (parameter.inputHandler.AdjustedJumpDir == JumpInput.Up)
         //{
-        //    parameter.catHead.transform.localRotation = Quaternion.Euler(0, 0, 180);
+        //    parameter.catHead.transform.localRotation = Quaternion.Euler(0, 0, 0);
         //    parameter.catHead.transform.localScale = new Vector3(40, 40, 40);
         //    // parameter.catHead.GetComponent<CatHead>().startPos = new Vector3(manager.transform.position.x, manager.transform.position.y + 16.5f, manager.transform.position.z);
         //    parameter.catHead.GetComponent<CatHead>().startPos = manager.transform.position+manager.transform.rotation*vertStartPos;
         //    parameter.animator.Play("Jump_Prepare_Verticle");
+        //    parameter.catHead.SetActive(true);
         //}
-        else if(parameter.inputHandler.AdjustedJumpDir == JumpInput.Left)
-        {
-            manager.transform.localScale = new Vector3(1, 1, 1);
-            parameter.catHead.transform.localRotation = Quaternion.Euler(0, 0, 90);
-            parameter.catHead.transform.localScale = new Vector3(40, 40, 40);
-            // parameter.catHead.GetComponent<CatHead>().startPos = new Vector3(manager.transform.position.x - 12.6f, manager.transform.position.y + 6.2f, manager.transform.position.z);
-            parameter.catHead.GetComponent<CatHead>().startPos = manager.transform.position+manager.transform.rotation*leftStartPos;
-            parameter.animator.Play("Jump_Prepare_Horizontal");
-            parameter.catHead.SetActive(true);
-        }
-        else if (parameter.inputHandler.AdjustedJumpDir == JumpInput.Right)
-        {
-            manager.transform.localScale = new Vector3(-1, 1, 1);
-            parameter.catHead.transform.localRotation = Quaternion.Euler(0, 0, 90);
-            parameter.catHead.transform.localScale = new Vector3(40, 40, 40);
-            // parameter.catHead.GetComponent<CatHead>().startPos = new Vector3(manager.transform.position.x + 12.6f, manager.transform.position.y + 6.2f, manager.transform.position.z);
-            parameter.catHead.GetComponent<CatHead>().startPos = manager.transform.position+manager.transform.rotation*rightStartPos;
-            parameter.animator.Play("Jump_Prepare_Horizontal");
-            parameter.catHead.SetActive(true);
-        }
+        //else if(parameter.inputHandler.AdjustedJumpDir == JumpInput.Left)
+        //{
+        //    manager.transform.localScale = new Vector3(1, 1, 1);
+        //    parameter.catHead.transform.localRotation = Quaternion.Euler(0, 0, 90);
+        //    parameter.catHead.transform.localScale = new Vector3(40, 40, 40);
+        //    // parameter.catHead.GetComponent<CatHead>().startPos = new Vector3(manager.transform.position.x - 12.6f, manager.transform.position.y + 6.2f, manager.transform.position.z);
+        //    parameter.catHead.GetComponent<CatHead>().startPos = manager.transform.position+manager.transform.rotation*leftStartPos;
+        //    parameter.animator.Play("Jump_Prepare_Horizontal");
+        //    parameter.catHead.SetActive(true);
+        //}
+        //else if (parameter.inputHandler.AdjustedJumpDir == JumpInput.Right)
+        //{
+        //    manager.transform.localScale = new Vector3(-1, 1, 1);
+        //    parameter.catHead.transform.localRotation = Quaternion.Euler(0, 0, 90);
+        //    parameter.catHead.transform.localScale = new Vector3(40, 40, 40);
+        //    // parameter.catHead.GetComponent<CatHead>().startPos = new Vector3(manager.transform.position.x + 12.6f, manager.transform.position.y + 6.2f, manager.transform.position.z);
+        //    parameter.catHead.GetComponent<CatHead>().startPos = manager.transform.position+manager.transform.rotation*rightStartPos;
+        //    parameter.animator.Play("Jump_Prepare_Horizontal");
+        //    parameter.catHead.SetActive(true);
+        //}
     }
 }
 #endregion

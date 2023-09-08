@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -8,29 +9,36 @@ public class CatHead : MonoBehaviour
 {
     [SerializeField] TileManager tileManager;
     [SerializeField] PlayerFSM player;
-    public Vector3 collidePos;
     [SerializeField] AnimationCurve flyingCurve;
     public JumpInput jumpDir;
     private bool canFly;
-    private float t;
-    private float displacement;
     SpriteRenderer headSprite;
     public Vector3 startPos;
     private bool prepareAnimationOver;
-
+    public float lerpRatio;
+    public float totalDistance;
+    public float flySpeed;
+    public Vector2 totalSpeed;
+    private Rigidbody2D rb;
+    private bool headFinished;
+    [SerializeField] float initFlySpeed;    //change in inspector
+    
     [SerializeField] Transform head_left, head_right, leg_left, leg_right;
 
     private void Awake()
     {
         headSprite = GetComponent<SpriteRenderer>();
+        rb = GetComponent<Rigidbody2D>();
         gameObject.GetComponent<BoxCollider2D>().enabled = false;
     }
 
     private void OnEnable()
     {
+        headFinished = true;
         headSprite.enabled = false;
         jumpDir = player.parameter.inputHandler.jumpDir;
-        t = 0;
+        totalDistance = Vector2.Distance(player.parameter.jumpHit.point, (Vector2)startPos);
+        flySpeed = 0;
     }
 
     private void OnDisable()
@@ -38,7 +46,18 @@ public class CatHead : MonoBehaviour
         //player.parameter.leftShape.SetActive(false);
         //player.parameter.rightShape.SetActive(false);
         canFly = false;
+        headFinished = false;
         prepareAnimationOver = false;
+    }
+
+    private void FixedUpdate()
+    {
+        AddFlySpeed();
+    }
+
+    private void AddFlySpeed()
+    {
+        rb.velocity = totalSpeed;
     }
 
     private void Update()
@@ -52,109 +71,59 @@ public class CatHead : MonoBehaviour
             player.parameter.rightShape.SetActive(true);
             gameObject.GetComponent<BoxCollider2D>().enabled = true;
             prepareAnimationOver = true;   //set opposite, make sure this "if" can only in at a time
+            flySpeed = initFlySpeed;
         }
-
         Fly();
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.CompareTag("LightTile"))
-        {
-            gameObject.GetComponent<BoxCollider2D>().enabled = false;   //Close head's collider
-
-            //Debug.Log("trigger");
-            collidePos = collision.ClosestPoint(transform.position);
-            Vector3 coll_1 = collidePos;
-            Vector3 coll_2 = collidePos;
-            Vector3 coll_3 = collidePos;
-            Vector3 coll_4 = collidePos;
-
-            if (jumpDir == JumpInput.Up)
-            {
-                coll_1.y = Mathf.Round(collidePos.y) - 0.5f;
-                coll_2.y = Mathf.Round(collidePos.y) + 0.5f;
-            }
-            else if(jumpDir == JumpInput.Down)
-            {
-                coll_1.y = Mathf.Round(collidePos.y) - 0.5f;
-                coll_2.y = Mathf.Round(collidePos.y) + 0.5f;
-            }
-            else if(jumpDir == JumpInput.Left)
-            {
-                coll_1.x = Mathf.Round(collidePos.x) - 0.5f;
-                coll_2.x = Mathf.Round(collidePos.x) + 0.5f;
-            }else if(jumpDir == JumpInput.Right)
-            {
-                coll_1.x = Mathf.Round(collidePos.x) - 0.5f;
-                coll_2.x = Mathf.Round(collidePos.x) + 0.5f;
-            }
-
-            if (tileManager.SearchColor(coll_1) && tileManager.SearchColor(coll_2))
-            {
-                canFly = false;
-                //collidePos = transform.position;
-                Debug.DrawRay(collidePos,Vector2.up*5,Color.red,100000);
-                Debug.DrawRay(collidePos,Vector2.left*5,Color.red,100000);
-                transform.SetParent(collision.transform, true);     //let head maintain its world position!
-                StartCoroutine(CatFly());   //Fly cat to the postion of head
-            }
-        }
     }
 
     void Fly()
     {
-        if(canFly && t <= 0.5f)      //Manually set the flying duration as 0.5f in the flyingCurve!
+        if(canFly && Vector2.Distance((Vector2)startPos, player.parameter.jumpHit.point) >= 2f)
         {
-            t += Time.deltaTime;
-            displacement = flyingCurve.Evaluate(t);
+            lerpRatio = Vector2.Distance((Vector2)transform.position, startPos) / totalDistance;
+            flySpeed = flyingCurve.Evaluate(lerpRatio);
             if(jumpDir == JumpInput.Up)
             {
-                transform.position = new Vector3(startPos.x, startPos.y + displacement, startPos.z);
+                totalSpeed = new Vector2(0, flySpeed);
             }
             else if(jumpDir == JumpInput.Down)
             {
-                transform.position = new Vector3(startPos.x, startPos.y - displacement, startPos.z);
+                totalSpeed = new Vector2(0, -flySpeed);
             }
             else if(jumpDir==JumpInput.Left)
             {
-                transform.position = new Vector3(startPos.x - displacement, startPos.y, startPos.z);
+                totalSpeed = new Vector2(-flySpeed, 0);
             }
             else
             {
-                transform.position = new Vector3(startPos.x + displacement, startPos.y, startPos.z);
+                totalSpeed = new Vector2(flySpeed, 0);
             }
         }
-        else if(canFly && t > 0.5f)      //if head collide with nothing, fly back and leave JumpState!
+        else if(canFly && headFinished)     //might have some bugs, if so, use Enummerator to held Fly() function
         {
-            t = 0;
-            //canFly = false;
-            player.parameter.leftShape.SetActive(false);
-            player.parameter.rightShape.SetActive(false);
-            player.parameter.jumpFinished = true;           //this is the value to evaluate whether StateMachine change state
+            //StartCoroutine(CatFly());
         }
     }
 
     IEnumerator CatFly()
     {
-        t = 0f;
-        while(Vector3.Distance(head_left.position, leg_left.position) >= 20f || Vector3.Distance(head_right.position, leg_right.position) >= 20f)
+        while(Vector2.Distance((Vector2)player.transform.position, player.parameter.jumpHit.point) >= 3f)
         {
-            t += Time.deltaTime;
-            displacement = flyingCurve.Evaluate(t);
+            lerpRatio = Vector2.Distance((Vector2)player.transform.position, startPos) / totalDistance;
+            flySpeed = flyingCurve.Evaluate(lerpRatio);
             switch(jumpDir)
             {
                 case JumpInput.Up :
-                    player.transform.position = new Vector3(player.transform.position.x, player.transform.position.y + displacement, player.transform.position.z);
+                    totalSpeed = new Vector2(0, flySpeed);
                     break;
                 case JumpInput.Down :
-                    player.transform.position = new Vector3(player.transform.position.x, player.transform.position.y - displacement, player.transform.position.z);
+                    totalSpeed = new Vector2(0, -flySpeed);
                     break; 
                 case JumpInput.Left :
-                    player.transform.position = new Vector3(player.transform.position.x - displacement, player.transform.position.y, player.transform.position.z);
+                    totalSpeed = new Vector2(-flySpeed, 0);
                     break;
                 case JumpInput.Right :
-                    player.transform.position = new Vector3(player.transform.position.x + displacement, player.transform.position.y, player.transform.position.z);
+                    totalSpeed = new Vector2(flySpeed, 0);
                     break;
             }
             yield return null;
@@ -191,7 +160,7 @@ public class CatHead : MonoBehaviour
                 break;
         }
 
-        player.transform.position = collidePos;
+        player.transform.position = player.parameter.jumpHit.point;
 
         player.parameter.animator.Play("Jump_Rolling");
         yield return null;
@@ -204,8 +173,6 @@ public class CatHead : MonoBehaviour
         //TODO:Play the audio of landing
 
 
-        transform.SetParent(player.transform, true);   //set head's parent back to cat!
-        //Debug.Log(transform.parent.name);
         yield return null;
         player.parameter.jumpFinished = true;      //tell machine to exit JumpState!
     }

@@ -31,10 +31,11 @@ public class PlayerParameter        //player's data
     public GameObject catHead;
 
     //jump related
-    public Vector2 jumpPos;
     public bool jumpFinished;   //Use to change state;
     public bool inJumpState;    //Use to forbid the FaceFlip
     public GameObject leftShape, rightShape;
+    public RaycastHit2D jumpHit;
+    public TileManager tileManager;
 
     //The direction of platform player is on
     public PlatformDirType platformDir;
