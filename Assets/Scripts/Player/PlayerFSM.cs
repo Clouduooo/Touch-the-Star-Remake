@@ -9,7 +9,7 @@ using UnityEngine.Tilemaps;
 
 public enum StateType
 {
-    Idle, Move, Jump
+    Idle, Move, Jump,JumpNew,
 }
 
 public enum PlatformDirType
@@ -34,8 +34,12 @@ public class PlayerParameter        //player's data
     public bool jumpFinished;   //Use to change state;
     public bool inJumpState;    //Use to forbid the FaceFlip
     public GameObject leftShape, rightShape;
+    public GameObject body;
     public RaycastHit2D jumpHit;
     public TileManager tileManager;
+    public Transform jumpCheckRayStartPoint;
+    public bool isJumpPreAnimFin;
+    public AnimationCurve flyingCurve;
 
     //The direction of platform player is on
     public PlatformDirType platformDir;
@@ -66,11 +70,12 @@ public class PlayerFSM : MonoBehaviour
     {
         states.Add(StateType.Idle, new IdleState(this));
         states.Add(StateType.Move, new MoveState(this));
-        states.Add(StateType.Jump, new JumpState(this));
+        states.Add(StateType.JumpNew, new JumpStateNew(this));
 
         parameter.catHead.SetActive(false);
-        parameter.leftShape.SetActive(false);
-        parameter.rightShape.SetActive(false);
+        // parameter.leftShape.SetActive(false);
+        // parameter.rightShape.SetActive(false);
+        parameter.body.SetActive(false);
 
         //Attach to player's component
         parameter.rb = GetComponent<Rigidbody2D>();
@@ -101,13 +106,14 @@ public class PlayerFSM : MonoBehaviour
 
     private void FixedUpdate()
     {
-        AddSpeed();
+        if(!parameter.inJumpState)
+            AddSpeed();
     }
 
     void Update()
     {
         parameter.initCD += Time.deltaTime; 
-        ChangeInputValue();
+        AdjustInput();
         FlipDirection();
         RacastCheck();
         currentState.OnUpdate();
@@ -169,7 +175,7 @@ public class PlayerFSM : MonoBehaviour
         }
     }
 
-    void ChangeInputValue()
+    void AdjustInput()
     {
         parameter.inputHandler.AdjustedMovementDir=Vector2Int.RoundToInt(Quaternion.Euler(transform.rotation.eulerAngles.x,transform.rotation.eulerAngles.y,-transform.rotation.eulerAngles.z)*parameter.inputHandler.MovementInput);
         Vector2Int AdjustedJumpDir=new(0,0);

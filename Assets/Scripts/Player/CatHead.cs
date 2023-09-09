@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Reflection;
 using UnityEngine;
+using UnityEngine.Timeline;
+using UnityEngine.UIElements;
 
 public class CatHead : MonoBehaviour
 {
@@ -21,6 +23,7 @@ public class CatHead : MonoBehaviour
     public Vector2 totalSpeed;
     private Rigidbody2D rb;
     private bool headFinished;
+    private bool bodyStarted;
     [SerializeField] float initFlySpeed;    //change in inspector
     
     [SerializeField] Transform head_left, head_right, leg_left, leg_right;
@@ -35,10 +38,12 @@ public class CatHead : MonoBehaviour
     private void OnEnable()
     {
         headFinished = true;
+        bodyStarted=false;
         headSprite.enabled = false;
         jumpDir = player.parameter.inputHandler.jumpDir;
         totalDistance = Vector2.Distance(player.parameter.jumpHit.point, (Vector2)startPos);
         flySpeed = 0;
+        transform.position=startPos;
     }
 
     private void OnDisable()
@@ -47,6 +52,7 @@ public class CatHead : MonoBehaviour
         //player.parameter.rightShape.SetActive(false);
         canFly = false;
         headFinished = false;
+        bodyStarted=true;
         prepareAnimationOver = false;
     }
 
@@ -78,9 +84,12 @@ public class CatHead : MonoBehaviour
 
     void Fly()
     {
-        if(canFly && Vector2.Distance((Vector2)startPos, player.parameter.jumpHit.point) >= 2f)
+        // Debug.Log(Vector2.Distance((Vector2)transform.position, player.parameter.jumpHit.point));
+        // Debug.Log(flySpeed);
+        // Debug.Log(bodyStarted);
+        if(canFly && Vector2.Distance((Vector2)transform.position, player.parameter.jumpHit.point) >= 2f && !bodyStarted)
         {
-            lerpRatio = Vector2.Distance((Vector2)transform.position, startPos) / totalDistance;
+            lerpRatio = Vector2.Distance((Vector2)transform.position, startPos) / totalDistance+0.01f;
             flySpeed = flyingCurve.Evaluate(lerpRatio);
             if(jumpDir == JumpInput.Up)
             {
@@ -99,9 +108,10 @@ public class CatHead : MonoBehaviour
                 totalSpeed = new Vector2(flySpeed, 0);
             }
         }
-        else if(canFly && headFinished)     //might have some bugs, if so, use Enummerator to held Fly() function
+        else if(canFly && !bodyStarted)     //might have some bugs, if so, use Enummerator to held Fly() function
         {
-            //StartCoroutine(CatFly());
+            bodyStarted=true;
+            StartCoroutine(CatFly());
         }
     }
 

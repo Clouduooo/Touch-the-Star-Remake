@@ -33,7 +33,7 @@ public class IdleState : IPlayerState
     {
         if(parameter.inputHandler.AdjustedJumpDir != JumpInput.None)
         {
-            manager.TransitionState(StateType.Jump);
+            manager.TransitionState(StateType.JumpNew);
         }
         else if(parameter.inputHandler.AdjustedMovementDir.x != 0)     //if press move button
         {
@@ -69,7 +69,7 @@ public class MoveState : IPlayerState
         DetectMove();
         if(parameter.inputHandler.AdjustedJumpDir != JumpInput.None)
         {
-            manager.TransitionState(StateType.Jump);
+            manager.TransitionState(StateType.JumpNew);
         }
         else if(parameter.speed.x == 0)
         {
@@ -186,10 +186,11 @@ public class JumpState : IPlayerState
         switch (parameter.inputHandler.AdjustedJumpDir)
         {
             case JumpInput.Up:
-                if(Physics2D.Raycast((Vector2)manager.transform.position, manager.transform.up, Mathf.Infinity, parameter.lightLayer) &&
-                    parameter.tileManager.SearchColor(new Vector3(Physics2D.Raycast((Vector2)manager.transform.position, manager.transform.up, Mathf.Infinity, parameter.lightLayer).point.x, Physics2D.Raycast((Vector2)manager.transform.position, manager.transform.up, Mathf.Infinity, parameter.lightLayer).point.y, 0)))
+            {
+                RaycastHit2D hit=Physics2D.Raycast((Vector2)parameter.jumpCheckRayStartPoint.transform.position, manager.transform.up, Mathf.Infinity, parameter.lightLayer);
+                if(!hit.collider.IsUnityNull() && parameter.tileManager.SearchColor((Vector3)hit.point+0.5f*manager.transform.up))
                 {
-                    parameter.jumpHit = Physics2D.Raycast((Vector2)manager.transform.position, Vector2.up, Mathf.Infinity, parameter.lightLayer);
+                    parameter.jumpHit = hit;
                     //Time.timeScale = 0f;
                     parameter.catHead.transform.localRotation = Quaternion.Euler(0, 0, 0);
                     parameter.catHead.transform.localScale = new Vector3(40, 40, 40);
@@ -203,12 +204,17 @@ public class JumpState : IPlayerState
                     parameter.jumpFinished = true;
                 }
                 break;
-
+            }
             case JumpInput.Left:
-                if(Physics2D.Raycast((Vector2)manager.transform.position, -manager.transform.right, Mathf.Infinity, parameter.lightLayer) &&
-                    parameter.tileManager.SearchColor(new Vector3(Physics2D.Raycast((Vector2)manager.transform.position, -manager.transform.right, Mathf.Infinity, parameter.lightLayer).point.x, Physics2D.Raycast((Vector2)manager.transform.position, -manager.transform.right, Mathf.Infinity, parameter.lightLayer).point.y, 0)))
+            {
+                RaycastHit2D hit=Physics2D.Raycast((Vector2)parameter.jumpCheckRayStartPoint.transform.position, -manager.transform.right, Mathf.Infinity, parameter.lightLayer);
+                Debug.DrawRay(hit.point,10*Vector2.up,Color.red,100000);
+                Debug.DrawRay(hit.point,10*Vector2.right,Color.red,100000);
+                Debug.DrawRay((Vector3)hit.point+0.5f*-manager.transform.right,10*Vector2.up,Color.blue,100000);
+                Debug.DrawRay((Vector3)hit.point+0.5f*-manager.transform.right,10*Vector2.right,Color.blue,100000);
+                if(!hit.collider.IsUnityNull() && parameter.tileManager.SearchColor((Vector3)hit.point+0.5f*-manager.transform.right))
                 {
-                    parameter.jumpHit = Physics2D.Raycast((Vector2)manager.transform.position, -manager.transform.right, Mathf.Infinity, parameter.lightLayer);
+                    parameter.jumpHit = hit;
                     //Time.timeScale = 0f;
                     manager.transform.localScale = new Vector3(1, 1, 1);
                     parameter.catHead.transform.localRotation = Quaternion.Euler(0, 0, 90);
@@ -224,12 +230,18 @@ public class JumpState : IPlayerState
                     parameter.jumpFinished = true;
                 }
                 break;
+            }
 
             case JumpInput.Right:
-                if (Physics2D.Raycast((Vector2)manager.transform.position, manager.transform.right, Mathf.Infinity, parameter.lightLayer) &&
-                    parameter.tileManager.SearchColor(new Vector3(Physics2D.Raycast((Vector2)manager.transform.position, manager.transform.right, Mathf.Infinity, parameter.lightLayer).point.x, Physics2D.Raycast((Vector2)manager.transform.position, manager.transform.right, Mathf.Infinity, parameter.lightLayer).point.y, 0)))
+            {
+                RaycastHit2D hit=Physics2D.Raycast((Vector2)parameter.jumpCheckRayStartPoint.transform.position, manager.transform.right, Mathf.Infinity, parameter.lightLayer);
+                Debug.DrawRay(hit.point,10*Vector2.up,Color.red,100000);
+                Debug.DrawRay(hit.point,10*Vector2.right,Color.red,100000);
+                Debug.DrawRay((Vector3)hit.point+0.5f*-manager.transform.right,10*Vector2.up,Color.blue,100000);
+                Debug.DrawRay((Vector3)hit.point+0.5f*-manager.transform.right,10*Vector2.right,Color.blue,100000);
+                if(!hit.collider.IsUnityNull() && parameter.tileManager.SearchColor((Vector3)hit.point+0.5f*manager.transform.right))
                 {
-                    parameter.jumpHit = Physics2D.Raycast((Vector2)manager.transform.position, manager.transform.right, Mathf.Infinity, parameter.lightLayer);
+                    parameter.jumpHit = hit;
                     //Time.timeScale = 0f;
                     manager.transform.localScale = new Vector3(-1, 1, 1);
                     parameter.catHead.transform.localRotation = Quaternion.Euler(0, 0, 90);
@@ -245,6 +257,7 @@ public class JumpState : IPlayerState
                     parameter.jumpFinished = true;
                 }
                 break;
+            }
         }
 
         //if (parameter.inputHandler.AdjustedJumpDir == JumpInput.Up)
@@ -276,6 +289,257 @@ public class JumpState : IPlayerState
         //    parameter.animator.Play("Jump_Prepare_Horizontal");
         //    parameter.catHead.SetActive(true);
         //}
+    }
+}
+#endregion
+
+#region JumpStateNew
+public class JumpStateNew : IPlayerState
+{
+    readonly private PlayerFSM manager;
+    readonly private PlayerParameter parameter;
+
+    readonly private Vector3 vertStartPos=new(0,16.5f,0);
+    readonly private Vector3 rightStartPos=new(12.6f,6.2f,0);
+    readonly private Vector3 leftStartPos=new(-12.6f,6.2f,0);
+
+    private JumpInput jumpInput,adjustedJumpInput;
+    private Vector2 jumpStartPos;
+    readonly private GameObject catHead;
+    private Vector2 hitPos;
+    private float totalDistance;
+    private readonly Rigidbody2D catHeadRb;
+    private readonly Rigidbody2D catLegRb;
+    private Vector2 headToLeg;
+
+    private enum JumpSubState
+    {
+        JumpPrepare,
+        HeadFly,
+        LegFly,
+        JumpEnd,
+    }
+    private JumpSubState jumpSubState;
+
+    public JumpStateNew(PlayerFSM manager)  //Get reference of PlayerFSM and Player Data from Initiate Function
+    {
+        this.manager = manager;
+        parameter = manager.parameter;
+        catHead=parameter.catHead;
+        catHeadRb=catHead.GetComponent<Rigidbody2D>();
+        catLegRb=manager.GetComponent<Rigidbody2D>();
+    }
+
+    public void OnEnter()
+    {
+        jumpInput=parameter.inputHandler.jumpDir;
+        adjustedJumpInput=parameter.inputHandler.AdjustedJumpDir;
+        jumpSubState=JumpSubState.JumpPrepare;
+        parameter.isJumpPreAnimFin=false;
+        parameter.inJumpState=true;
+        catLegRb.velocity=Vector2.zero;
+    }
+
+    public void OnExit()
+    {
+        catHead.SetActive(false);
+        parameter.inJumpState=false;
+    }
+
+    public void OnUpdate()
+    {
+        if(jumpSubState==JumpSubState.JumpPrepare)
+        {
+            JumpPrepare();
+        }
+        else if(jumpSubState==JumpSubState.HeadFly)
+        {
+            HeadFly();
+        }
+        else if(jumpSubState==JumpSubState.LegFly)
+        {
+            LegFly();
+        }
+        if (jumpSubState==JumpSubState.JumpEnd)
+        {
+            Debug.Log("?");
+            if (parameter.inputHandler.AdjustedMovementDir.x != 0)
+            {
+                parameter.inputHandler.jumpDir = JumpInput.None;
+                manager.TransitionState(StateType.Move);
+            }
+            else
+            {
+                parameter.inputHandler.jumpDir = JumpInput.None;
+                manager.TransitionState(StateType.Idle);
+            }
+        }
+    }
+
+    void JumpPrepare()
+    {
+        if (adjustedJumpInput == JumpInput.Down)
+        {
+            jumpSubState = JumpSubState.JumpEnd;      //change state
+            return;
+        }
+
+        switch (adjustedJumpInput)
+        {
+            case JumpInput.Up:
+            {
+                RaycastHit2D hit=Physics2D.Raycast((Vector2)parameter.jumpCheckRayStartPoint.transform.position, manager.transform.up, Mathf.Infinity, parameter.lightLayer);
+                hitPos=hit.point;
+                Debug.DrawRay(hit.point,10*Vector2.up,Color.red,100000);
+                Debug.DrawRay(hit.point,10*Vector2.right,Color.red,100000);
+                Debug.DrawRay((Vector3)hit.point+0.5f*-manager.transform.right,10*Vector2.up,Color.blue,100000);
+                Debug.DrawRay((Vector3)hit.point+0.5f*-manager.transform.right,10*Vector2.right,Color.blue,100000);
+                if(!hit.collider.IsUnityNull() && parameter.tileManager.SearchColor((Vector3)hitPos+0.5f*manager.transform.up))
+                {
+                    catHead.transform.localRotation = Quaternion.Euler(0, 0, 0);
+                    catHead.transform.localScale = new Vector3(40, 40, 40);
+                    jumpStartPos = manager.transform.position + manager.transform.rotation * vertStartPos;
+                    parameter.animator.Play("Jump_Prepare_Verticle");
+                    Debug.Log(parameter.jumpHit.point);
+                }
+                else
+                {
+                    jumpSubState = JumpSubState.JumpEnd;
+                    return;
+                }
+                break;
+            }
+            case JumpInput.Left:
+            {
+                RaycastHit2D hit=Physics2D.Raycast((Vector2)parameter.jumpCheckRayStartPoint.transform.position, -manager.transform.right, Mathf.Infinity, parameter.lightLayer);
+                hitPos=hit.point;
+                Debug.DrawRay(hit.point,10*Vector2.up,Color.red,100000);
+                Debug.DrawRay(hit.point,10*Vector2.right,Color.red,100000);
+                Debug.DrawRay((Vector3)hit.point+0.5f*-manager.transform.right,10*Vector2.up,Color.blue,100000);
+                Debug.DrawRay((Vector3)hit.point+0.5f*-manager.transform.right,10*Vector2.right,Color.blue,100000);
+                if(!hit.collider.IsUnityNull() && parameter.tileManager.SearchColor((Vector3)hitPos+0.5f*-manager.transform.right))
+                {
+                    manager.transform.localScale = new Vector3(1, 1, 1);
+                    catHead.transform.localRotation = Quaternion.Euler(0, 0, 90);
+                    catHead.transform.localScale = new Vector3(40, 40, 40);
+                    // parameter.catHead.GetComponent<CatHead>().startPos = new Vector3(manager.transform.position.x - 12.6f, manager.transform.position.y + 6.2f, manager.transform.position.z);
+                    jumpStartPos = manager.transform.position + manager.transform.rotation * leftStartPos;
+                    parameter.animator.Play("Jump_Prepare_Horizontal");
+                }
+                else
+                {
+                    jumpSubState = JumpSubState.JumpEnd;
+                    return;
+                }
+                break;
+            }
+
+            case JumpInput.Right:
+            {
+                RaycastHit2D hit=Physics2D.Raycast((Vector2)parameter.jumpCheckRayStartPoint.transform.position, manager.transform.right, Mathf.Infinity, parameter.lightLayer);
+                hitPos=hit.point;
+                Debug.DrawRay(hit.point,10*Vector2.up,Color.red,100000);
+                Debug.DrawRay(hit.point,10*Vector2.right,Color.red,100000);
+                Debug.DrawRay((Vector3)hit.point+0.5f*-manager.transform.right,10*Vector2.up,Color.blue,100000);
+                Debug.DrawRay((Vector3)hit.point+0.5f*-manager.transform.right,10*Vector2.right,Color.blue,100000);
+                if(!hit.collider.IsUnityNull() && parameter.tileManager.SearchColor((Vector3)hitPos+0.5f*manager.transform.right))
+                {
+                    manager.transform.localScale = new Vector3(-1, 1, 1);
+                    catHead.transform.localRotation = Quaternion.Euler(0, 0, 90);
+                    catHead.transform.localScale = new Vector3(40, 40, 40);
+                    // parameter.catHead.GetComponent<CatHead>().startPos = new Vector3(manager.transform.position.x + 12.6f, manager.transform.position.y + 6.2f, manager.transform.position.z);
+                    jumpStartPos = manager.transform.position + manager.transform.rotation * rightStartPos;
+                    parameter.animator.Play("Jump_Prepare_Horizontal");
+                }
+                else
+                {
+                    jumpSubState = JumpSubState.JumpEnd;
+                    return;
+                }
+                break;
+            }
+        }
+        jumpSubState=JumpSubState.HeadFly;
+        totalDistance = Vector2.Distance(hitPos,jumpStartPos);
+        catHead.transform.position=jumpStartPos;
+        headToLeg=manager.transform.position-catHead.transform.position;
+        catHead.SetActive(true);
+    }
+
+    void HeadFly()
+    {
+        if(!parameter.isJumpPreAnimFin)
+            return;
+        parameter.body.SetActive(true);
+        if(Vector2.Distance((Vector2)catHead.transform.position, hitPos) >= 2f)
+        {
+            float lerpRatio = Vector2.Distance((Vector2)catHead.transform.position, jumpStartPos) / totalDistance;
+            float flySpeed = parameter.flyingCurve.Evaluate(lerpRatio+0.01f);
+            catHeadRb.velocity = jumpInput switch
+            {
+                JumpInput.Up => new Vector2(0, flySpeed),
+                JumpInput.Down => new Vector2(0, -flySpeed),
+                JumpInput.Left => new Vector2(-flySpeed, 0),
+                JumpInput.Right => new Vector2(flySpeed, 0),
+                _ => Vector2.zero,
+            };
+        }
+        else
+        {
+            catHeadRb.velocity=Vector2.zero;
+            catHead.transform.position=hitPos;
+            jumpSubState=JumpSubState.LegFly;
+        }
+    }
+
+    void LegFly()
+    {
+        if(Vector2.Distance((Vector2)manager.transform.position, hitPos+headToLeg) >= 3f)
+        {
+            float lerpRatio = Vector2.Distance((Vector2)manager.transform.position, jumpStartPos+headToLeg) / totalDistance;
+            float flySpeed = parameter.flyingCurve.Evaluate(lerpRatio+0.01f);
+            catLegRb.velocity = jumpInput switch
+            {
+                JumpInput.Up => new Vector2(0, flySpeed),
+                JumpInput.Down => new Vector2(0, -flySpeed),
+                JumpInput.Left => new Vector2(-flySpeed, 0),
+                JumpInput.Right => new Vector2(flySpeed, 0),
+                _ => Vector2.zero,
+            };
+            return;
+        }
+
+        catHead.SetActive(false);
+        parameter.body.SetActive(false);
+
+        switch (jumpInput)
+        {
+            case JumpInput.Up:
+                manager.parameter.platformDir = PlatformDirType.Down;
+                manager.transform.rotation = Quaternion.Euler(0, 0, -180);
+                break;
+            case JumpInput.Down:
+                manager.parameter.platformDir = PlatformDirType.Up;
+                manager.transform.rotation = Quaternion.Euler(0, 0, 0);
+                break;
+            case JumpInput.Left:
+                manager.parameter.platformDir = PlatformDirType.Right;
+                manager.transform.rotation = Quaternion.Euler(0, 0, -90);
+                break;
+            case JumpInput.Right:
+                manager.parameter.platformDir = PlatformDirType.Left;
+                manager.transform.rotation = Quaternion.Euler(0, 0, 90);
+                break;
+        }
+
+        catLegRb.velocity=Vector2.zero;
+        manager.transform.position = hitPos;
+
+        manager.parameter.animator.Play("Jump_Rolling");
+
+        jumpSubState=JumpSubState.JumpEnd;
+        
+        //TODO:Play the audio of landing
     }
 }
 #endregion
