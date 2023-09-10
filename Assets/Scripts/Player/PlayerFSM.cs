@@ -39,6 +39,7 @@ public class PlayerParameter        //player's data
     public TileManager tileManager;
     public Transform jumpCheckRayStartPoint;
     public bool isJumpPreAnimFin;
+    public bool isJumpRollingAnimFin;
     public AnimationCurve flyingCurve;
 
     //The direction of platform player is on
@@ -121,10 +122,7 @@ public class PlayerFSM : MonoBehaviour
 
     public void TransitionState(StateType type)
     {
-        if(currentState != null)
-        {
-            currentState.OnExit();
-        }
+        currentState?.OnExit();
         currentState = states[type];
         currentState.OnEnter();
     }

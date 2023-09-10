@@ -5,6 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering.Universal.Internal;
 
 #region IdleState
 public class IdleState : IPlayerState
@@ -71,7 +72,7 @@ public class MoveState : IPlayerState
         {
             manager.TransitionState(StateType.JumpNew);
         }
-        else if(parameter.speed.x == 0)
+        else if(parameter.inputHandler.AdjustedMovementDir.x == 0)
         {
             manager.TransitionState(StateType.Idle);
         }
@@ -79,11 +80,11 @@ public class MoveState : IPlayerState
 
     void DetectMove()
     {
-        if(parameter.inputHandler.AdjustedMovementDir.x > 0)
+        if(parameter.inputHandler.AdjustedMovementDir.x > 0 && parameter.direction!=-1)
         {
             parameter.direction = 1;
         }
-        else if(parameter.inputHandler.AdjustedMovementDir.x < 0)
+        else if(parameter.inputHandler.AdjustedMovementDir.x < 0 && parameter.direction!=1)
         {
             parameter.direction = -1;
         }
@@ -315,8 +316,10 @@ public class JumpStateNew : IPlayerState
     private enum JumpSubState
     {
         JumpPrepare,
+        PreAnim,
         HeadFly,
         LegFly,
+        RollingAnim,
         JumpEnd,
     }
     private JumpSubState jumpSubState;
@@ -335,7 +338,6 @@ public class JumpStateNew : IPlayerState
         jumpInput=parameter.inputHandler.jumpDir;
         adjustedJumpInput=parameter.inputHandler.AdjustedJumpDir;
         jumpSubState=JumpSubState.JumpPrepare;
-        parameter.isJumpPreAnimFin=false;
         parameter.inJumpState=true;
         catLegRb.velocity=Vector2.zero;
     }
@@ -350,7 +352,13 @@ public class JumpStateNew : IPlayerState
     {
         if(jumpSubState==JumpSubState.JumpPrepare)
         {
+            parameter.isJumpPreAnimFin=false;
             JumpPrepare();
+        }
+        else if(jumpSubState==JumpSubState.PreAnim)
+        {
+            if(parameter.isJumpPreAnimFin)
+                jumpSubState=JumpSubState.HeadFly;
         }
         else if(jumpSubState==JumpSubState.HeadFly)
         {
@@ -360,9 +368,13 @@ public class JumpStateNew : IPlayerState
         {
             LegFly();
         }
+        else if(jumpSubState==JumpSubState.RollingAnim)
+        {
+            if(parameter.isJumpRollingAnimFin)
+                jumpSubState=JumpSubState.JumpEnd;
+        }
         if (jumpSubState==JumpSubState.JumpEnd)
         {
-            Debug.Log("?");
             if (parameter.inputHandler.AdjustedMovementDir.x != 0)
             {
                 parameter.inputHandler.jumpDir = JumpInput.None;
@@ -400,7 +412,6 @@ public class JumpStateNew : IPlayerState
                     catHead.transform.localScale = new Vector3(40, 40, 40);
                     jumpStartPos = manager.transform.position + manager.transform.rotation * vertStartPos;
                     parameter.animator.Play("Jump_Prepare_Verticle");
-                    Debug.Log(parameter.jumpHit.point);
                 }
                 else
                 {
@@ -459,17 +470,15 @@ public class JumpStateNew : IPlayerState
                 break;
             }
         }
-        jumpSubState=JumpSubState.HeadFly;
         totalDistance = Vector2.Distance(hitPos,jumpStartPos);
         catHead.transform.position=jumpStartPos;
         headToLeg=manager.transform.position-catHead.transform.position;
-        catHead.SetActive(true);
+        jumpSubState=JumpSubState.PreAnim;
     }
 
     void HeadFly()
     {
-        if(!parameter.isJumpPreAnimFin)
-            return;
+        catHead.SetActive(true);
         parameter.body.SetActive(true);
         if(Vector2.Distance((Vector2)catHead.transform.position, hitPos) >= 2f)
         {
@@ -535,9 +544,10 @@ public class JumpStateNew : IPlayerState
         catLegRb.velocity=Vector2.zero;
         manager.transform.position = hitPos;
 
+        parameter.isJumpRollingAnimFin=false;
         manager.parameter.animator.Play("Jump_Rolling");
-
-        jumpSubState=JumpSubState.JumpEnd;
+        
+        jumpSubState=JumpSubState.RollingAnim;
         
         //TODO:Play the audio of landing
     }
