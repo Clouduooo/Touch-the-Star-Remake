@@ -312,6 +312,7 @@ public class JumpStateNew : IPlayerState
     private readonly Rigidbody2D catHeadRb;
     private readonly Rigidbody2D catLegRb;
     private Vector2 headToLeg;
+    private bool isCloseJump;
 
     private enum JumpSubState
     {
@@ -335,6 +336,7 @@ public class JumpStateNew : IPlayerState
 
     public void OnEnter()
     {
+        isCloseJump = false;
         jumpInput=parameter.inputHandler.jumpDir;
         adjustedJumpInput=parameter.inputHandler.AdjustedJumpDir;
         jumpSubState=JumpSubState.JumpPrepare;
@@ -459,7 +461,7 @@ public class JumpStateNew : IPlayerState
                     catHead.transform.localRotation = Quaternion.Euler(0, 0, 90);
                     catHead.transform.localScale = new Vector3(40, 40, 40);
                     // parameter.catHead.GetComponent<CatHead>().startPos = new Vector3(manager.transform.position.x + 12.6f, manager.transform.position.y + 6.2f, manager.transform.position.z);
-                    jumpStartPos = manager.transform.position + manager.transform.rotation * rightStartPos;
+                    jumpStartPos = manager.transform.position + manager.transform.rotation * rightStartPos;                            
                     parameter.animator.Play("Jump_Prepare_Horizontal");
                 }
                 else
@@ -480,6 +482,16 @@ public class JumpStateNew : IPlayerState
     {
         catHead.SetActive(true);
         parameter.body.SetActive(true);
+
+        if(Vector2.Distance(jumpStartPos, hitPos) > Vector2.Distance((Vector2)manager.transform.position, hitPos) ||
+           Vector2.Distance((Vector2)manager.transform.position, hitPos) - Vector2.Distance(jumpStartPos, hitPos) <= 12f)
+        {
+            //Debug.Log("Skip");
+            isCloseJump = true;           //skip the process of giving velocity to cat's head and leg
+            catHeadRb.velocity = Vector2.zero;
+            catHead.transform.position = hitPos;
+            jumpSubState = JumpSubState.LegFly;
+        }
         if(Vector2.Distance((Vector2)catHead.transform.position, hitPos) >= 2f)
         {
             float lerpRatio = Vector2.Distance((Vector2)catHead.transform.position, jumpStartPos) / totalDistance;
@@ -503,7 +515,7 @@ public class JumpStateNew : IPlayerState
 
     void LegFly()
     {
-        if(Vector2.Distance((Vector2)manager.transform.position, hitPos+headToLeg) >= 3f)
+        if(!isCloseJump && Vector2.Distance((Vector2)manager.transform.position, hitPos+headToLeg) >= 3f)
         {
             float lerpRatio = Vector2.Distance((Vector2)manager.transform.position, jumpStartPos+headToLeg) / totalDistance;
             float flySpeed = parameter.flyingCurve.Evaluate(lerpRatio+0.01f);
