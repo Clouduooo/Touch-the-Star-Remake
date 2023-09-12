@@ -75,7 +75,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_Sprite: {fileID: 21300000, guid: 307724da6b186ed459647a92d21b4d67, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -128,17 +128,17 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
-      time: 1.2763677
-      value: 0.99983305
-      inSlope: 0.044579156
-      outSlope: 0.044579156
+      time: 1
+      value: 1
+      inSlope: 0.8825083
+      outSlope: 0.8825083
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      inWeight: 0
+      outWeight: 0.10420605
     - serializedVersion: 3
-      time: 1.9847412
-      value: 1.0366516
+      time: 4
+      value: 2
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -172,6 +172,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  SpriteDefault: {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  Circle: {fileID: 2100000, guid: 1616d136ebbae3f4d8181f12c451b92c, type: 2}
 --- !u!114 &1144602081267070212
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -18,7 +18,7 @@ public class CircleObjectPool : MonoBehaviour
     public bool collectionChecks = true;
     public int maxPoolSize = 40;
 
-    IObjectPool<GameObject> c_pool;
+    IObjectPool<GameObject> c_pool;     //for player
 
     public IObjectPool<GameObject> C_Pool
     {
@@ -28,7 +28,7 @@ public class CircleObjectPool : MonoBehaviour
             {
                 if(poolType == PoolType.Stack)
                 {
-                    c_pool = new ObjectPool<GameObject>(CreatePooledItem, OnTakeFromPool, OnReturnedToPool, OnDestroyPoolObject, collectionChecks, 10, maxPoolSize);
+                    c_pool = new ObjectPool<GameObject>(CreatePooledItem, OnTakeFromPool, OnReturnedToPool, OnDestroyPoolObject, collectionChecks, 20, maxPoolSize);
                 }
                 else
                 {

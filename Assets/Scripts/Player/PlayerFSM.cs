@@ -47,6 +47,7 @@ public class PlayerParameter        //player's data
 
     //ObjectPool related to use circle loop
     public float extendDuration;
+    public bool isWalking;
     public float initCD;
     public float cdTime;
     public CircleObjectPool circleObjectPool;

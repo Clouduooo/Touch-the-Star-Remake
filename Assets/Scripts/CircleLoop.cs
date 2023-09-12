@@ -18,6 +18,8 @@ public class CircleLoop : MonoBehaviour
     [SerializeField] AnimationCurve fadeCurve;
     TileManager tileManager;
     public Action backToPool;       //boardcast the action to put this gameobject back to objectpool
+    [SerializeField] Material SpriteDefault;
+    [SerializeField] Material Circle;
 
     private void Start()
     {
@@ -28,6 +30,15 @@ public class CircleLoop : MonoBehaviour
     private void OnEnable()
     {
         t = 0;
+        if (player.parameter.isWalking)
+        {
+            spriteRenderer.material = Circle;
+        }
+        else
+        {
+            spriteRenderer.color = Color.white;
+            spriteRenderer.material = SpriteDefault;
+        }
     }
 
     private void Update()
@@ -38,11 +49,20 @@ public class CircleLoop : MonoBehaviour
     // circle loop's function
     void ExtendAndFade()
     {
+        //if (player.parameter.isWalking)
+        //{
+        //    spriteRenderer.material = Circle;
+        //}
+        //else
+        //{
+        //    spriteRenderer.material = SpriteDefault;
+        //}
+
         if (t < player.parameter.extendDuration)
         {
             middlePos = transform.position;
             t += Time.deltaTime;
-            radius = lightTileCurve.Evaluate(t) * 20;        
+            radius = lightTileCurve.Evaluate(t) * 20;
             transform.localScale = new Vector3(radius/2.0f, radius/2.0f, radius/2.0f);
             if (t >= player.parameter.extendDuration - 1f)         
             {

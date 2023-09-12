@@ -99,6 +99,7 @@ public class MoveState : IPlayerState
             //GameObject.Instantiate(parameter.circleLoop, parameter.rayPoint_front.transform.position, Quaternion.identity);
             //GameObject.Instantiate(parameter.circleLoop, manager.transform.position, Quaternion.identity);
             // Use ObjectPool--Get Obeject!
+            parameter.isWalking = true;
             parameter.circleObjectPool.C_Pool.Get();
             parameter.initCD = 0;
         }
@@ -377,6 +378,12 @@ public class JumpStateNew : IPlayerState
         }
         if (jumpSubState==JumpSubState.JumpEnd)
         {
+            //get object
+            parameter.extendDuration = Vector2.Distance(hitPos, jumpStartPos) / 10f;
+            Debug.Log(parameter.extendDuration);
+            parameter.isWalking = false;
+            parameter.circleObjectPool.C_Pool.Get();
+
             if (parameter.inputHandler.AdjustedMovementDir.x != 0)
             {
                 parameter.inputHandler.jumpDir = JumpInput.None;
