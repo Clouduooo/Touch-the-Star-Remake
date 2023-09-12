@@ -28,6 +28,8 @@ public class CircleLoop2 : MonoBehaviour
     private void OnEnable()
     {
         t = 0;
+        spriteRenderer.color = new Color(1, 1, 1, 1);
+        transform.localScale=Vector2.zero;
     }
 
     private void Update()
