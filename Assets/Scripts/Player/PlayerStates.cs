@@ -30,6 +30,11 @@ public class IdleState : IPlayerState
         
     }
 
+    public void OnFixedUpdate()
+    {
+
+    }
+
     public void OnUpdate()
     {
         if(parameter.inputHandler.AdjustedJumpDir != JumpInput.None)
@@ -76,6 +81,11 @@ public class MoveState : IPlayerState
         {
             manager.TransitionState(StateType.Idle);
         }
+    }
+
+    public void OnFixedUpdate()
+    {
+        
     }
 
     void DetectMove()
@@ -174,6 +184,11 @@ public class JumpState : IPlayerState
                 manager.TransitionState(StateType.Idle);
             }
         }
+    }
+
+    public void OnFixedUpdate()
+    {
+        
     }
 
     void Jump()
@@ -363,14 +378,6 @@ public class JumpStateNew : IPlayerState
             if(parameter.isJumpPreAnimFin)
                 jumpSubState=JumpSubState.HeadFly;
         }
-        else if(jumpSubState==JumpSubState.HeadFly)
-        {
-            HeadFly();
-        }
-        else if(jumpSubState==JumpSubState.LegFly)
-        {
-            LegFly();
-        }
         else if(jumpSubState==JumpSubState.RollingAnim)
         {
             if (parameter.isJumpRollingAnimFin)
@@ -395,6 +402,19 @@ public class JumpStateNew : IPlayerState
                 parameter.inputHandler.jumpDir = JumpInput.None;
                 manager.TransitionState(StateType.Idle);
             }
+        }
+    }
+    
+
+    public void OnFixedUpdate()
+    {
+        if(jumpSubState==JumpSubState.HeadFly)
+        {
+            HeadFly();
+        }
+        else if(jumpSubState==JumpSubState.LegFly)
+        {
+            LegFly();
         }
     }
 
@@ -500,7 +520,7 @@ public class JumpStateNew : IPlayerState
             catHead.transform.position = hitPos;
             jumpSubState = JumpSubState.LegFly;
         }
-        if(Vector2.Distance((Vector2)catHead.transform.position, hitPos) >= 2f)
+        //if(Vector2.Distance((Vector2)catHead.transform.position, hitPos) >= 2f)
         {
             float lerpRatio = Vector2.Distance((Vector2)catHead.transform.position, jumpStartPos) / totalDistance;
             float flySpeed = parameter.flyingCurve.Evaluate(lerpRatio+0.01f) * parameter.flySpeedFix;
@@ -512,13 +532,12 @@ public class JumpStateNew : IPlayerState
                 JumpInput.Right => new Vector2(flySpeed, 0),
                 _ => Vector2.zero,
             };
+            if(flySpeed*Time.fixedDeltaTime<Vector2.Distance((Vector2)catHead.transform.position, hitPos))
+                return;
         }
-        else
-        {
-            catHeadRb.velocity=Vector2.zero;
-            catHead.transform.position=hitPos;
-            jumpSubState=JumpSubState.LegFly;
-        }
+        catHeadRb.velocity=Vector2.zero;
+        catHead.transform.position=hitPos;
+        jumpSubState=JumpSubState.LegFly;
     }
 
     void LegFly()
@@ -535,7 +554,8 @@ public class JumpStateNew : IPlayerState
                 JumpInput.Right => new Vector2(flySpeed, 0),
                 _ => Vector2.zero,
             };
-            return;
+            if(flySpeed*Time.fixedDeltaTime<Vector2.Distance((Vector2)manager.transform.position, hitPos+headToLeg))
+                return;
         }
 
         catHead.SetActive(false);

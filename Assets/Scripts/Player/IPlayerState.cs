@@ -5,6 +5,8 @@ public interface IPlayerState
 
     void OnUpdate();
 
+    void OnFixedUpdate();
+
     void OnExit();
 
 }

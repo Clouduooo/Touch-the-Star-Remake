@@ -111,6 +111,7 @@ public class PlayerFSM : MonoBehaviour
 
     private void FixedUpdate()
     {
+        currentState.OnFixedUpdate();
         if(!parameter.inJumpState)
             AddSpeed();
     }
