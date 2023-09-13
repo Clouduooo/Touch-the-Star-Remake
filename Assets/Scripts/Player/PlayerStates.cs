@@ -373,17 +373,18 @@ public class JumpStateNew : IPlayerState
         }
         else if(jumpSubState==JumpSubState.RollingAnim)
         {
-            if(parameter.isJumpRollingAnimFin)
-                jumpSubState=JumpSubState.JumpEnd;
+            if (parameter.isJumpRollingAnimFin)
+            {
+                //get object
+                parameter.extendDuration = Vector2.Distance(hitPos, jumpStartPos) / 10f;
+                Debug.Log(parameter.extendDuration);
+                parameter.isWalking = false;
+                parameter.circleObjectPool.C_Pool.Get();
+                jumpSubState = JumpSubState.JumpEnd;
+            }
         }
         if (jumpSubState==JumpSubState.JumpEnd)
         {
-            //get object
-            parameter.extendDuration = Vector2.Distance(hitPos, jumpStartPos) / 10f;
-            Debug.Log(parameter.extendDuration);
-            parameter.isWalking = false;
-            parameter.circleObjectPool.C_Pool.Get();
-
             if (parameter.inputHandler.AdjustedMovementDir.x != 0)
             {
                 parameter.inputHandler.jumpDir = JumpInput.None;

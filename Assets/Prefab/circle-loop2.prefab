@@ -142,7 +142,7 @@ MonoBehaviour:
       outWeight: 0
     - serializedVersion: 3
       time: 4
-      value: 3
+      value: 4
       inSlope: 0
       outSlope: 0
       tangentMode: 0

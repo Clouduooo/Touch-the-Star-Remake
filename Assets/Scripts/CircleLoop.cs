@@ -20,6 +20,7 @@ public class CircleLoop : MonoBehaviour
     public Action backToPool;       //boardcast the action to put this gameobject back to objectpool
     [SerializeField] Material SpriteDefault;
     [SerializeField] Material Circle;
+    private float fixedDuration;    //Get the value of extendDuration OnEnable, then fixed
 
     private void Start()
     {
@@ -29,6 +30,9 @@ public class CircleLoop : MonoBehaviour
     }
     private void OnEnable()
     {
+        spriteRenderer.color = Color.white;
+        transform.localScale = Vector2.zero;
+        fixedDuration = player.parameter.extendDuration;
         t = 0;
         if (player.parameter.isWalking)
         {
@@ -58,15 +62,15 @@ public class CircleLoop : MonoBehaviour
         //    spriteRenderer.material = SpriteDefault;
         //}
 
-        if (t < player.parameter.extendDuration)
+        if (t < fixedDuration)
         {
             middlePos = transform.position;
             t += Time.deltaTime;
             radius = lightTileCurve.Evaluate(t) * 20;
             transform.localScale = new Vector3(radius/2.0f, radius/2.0f, radius/2.0f);
-            if (t >= player.parameter.extendDuration - 1f)         
+            if (t >= fixedDuration - 1f)         
             {
-                alpha = fadeCurve.Evaluate(player.parameter.extendDuration - t);    //value in 0~1
+                alpha = fadeCurve.Evaluate(fixedDuration - t);    //value in 0~1
                 spriteRenderer.color = new Color(1, 1, 1, alpha);
             }
             tileManager.SetTileColor(middlePos, radius);
