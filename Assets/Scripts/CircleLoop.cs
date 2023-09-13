@@ -21,6 +21,7 @@ public class CircleLoop : MonoBehaviour
     [SerializeField] Material SpriteDefault;
     [SerializeField] Material Circle;
     private float fixedDuration;    //Get the value of extendDuration OnEnable, then fixed
+    private float lerpRatio;
 
     private void Start()
     {
@@ -40,7 +41,6 @@ public class CircleLoop : MonoBehaviour
         }
         else
         {
-            spriteRenderer.color = Color.white;
             spriteRenderer.material = SpriteDefault;
         }
     }
@@ -53,20 +53,12 @@ public class CircleLoop : MonoBehaviour
     // circle loop's function
     void ExtendAndFade()
     {
-        //if (player.parameter.isWalking)
-        //{
-        //    spriteRenderer.material = Circle;
-        //}
-        //else
-        //{
-        //    spriteRenderer.material = SpriteDefault;
-        //}
-
         if (t < fixedDuration)
         {
             middlePos = transform.position;
             t += Time.deltaTime;
-            radius = lightTileCurve.Evaluate(t) * 20;
+            lerpRatio = t / fixedDuration;      //value in 0~1
+            radius = lightTileCurve.Evaluate(t) * 20 * fixedDuration;
             transform.localScale = new Vector3(radius/2.0f, radius/2.0f, radius/2.0f);
             if (t >= fixedDuration - 1f)         
             {

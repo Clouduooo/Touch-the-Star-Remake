@@ -102,7 +102,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   squre2: {fileID: 1078309944, guid: e915d915d509b204ea0a3cfcb00a2d20, type: 3}
   extendDuration: 4
-  initCD: 1
+  initCD: 4
 --- !u!114 &8138701619395211058
 MonoBehaviour:
   m_ObjectHideFlags: 0

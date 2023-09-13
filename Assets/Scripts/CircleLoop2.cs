@@ -28,7 +28,7 @@ public class CircleLoop2 : MonoBehaviour
     private void OnEnable()
     {
         t = 0;
-        spriteRenderer.color = new Color(1, 1, 1, 1);
+        spriteRenderer.color = new Color(1, 1, 1, 0.5f);
         transform.localScale=Vector2.zero;
     }
 
@@ -42,7 +42,6 @@ public class CircleLoop2 : MonoBehaviour
     {
         if (t < lightSquare.extendDuration)
         {
-            Debug.Log(t);
             middlePos = transform.position;
             t += Time.deltaTime;
             radius = lightTileCurve.Evaluate(t) * 20;

@@ -14,7 +14,7 @@ public class LightSquare : MonoBehaviour
 
     private void Awake()
     {
-        t = 0;
+        t = initCD;
         spriteRenderer = GetComponent<SpriteRenderer>();
         pool = GetComponent<SquareObjectPool>();
     }
@@ -34,7 +34,6 @@ public class LightSquare : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log(collision.tag);
         if (collision.CompareTag("CircleLoop"))
         {
             spriteRenderer.sprite = squre2;

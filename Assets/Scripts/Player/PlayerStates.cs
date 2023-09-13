@@ -376,7 +376,7 @@ public class JumpStateNew : IPlayerState
             if (parameter.isJumpRollingAnimFin)
             {
                 //get object
-                parameter.extendDuration = Vector2.Distance(hitPos, jumpStartPos) / 10f;
+                parameter.extendDuration = Vector2.Distance(hitPos, jumpStartPos) / parameter.jumpDurtaionFix;
                 Debug.Log(parameter.extendDuration);
                 parameter.isWalking = false;
                 parameter.circleObjectPool.C_Pool.Get();
@@ -503,7 +503,7 @@ public class JumpStateNew : IPlayerState
         if(Vector2.Distance((Vector2)catHead.transform.position, hitPos) >= 2f)
         {
             float lerpRatio = Vector2.Distance((Vector2)catHead.transform.position, jumpStartPos) / totalDistance;
-            float flySpeed = parameter.flyingCurve.Evaluate(lerpRatio+0.01f);
+            float flySpeed = parameter.flyingCurve.Evaluate(lerpRatio+0.01f) * parameter.flySpeedFix;
             catHeadRb.velocity = jumpInput switch
             {
                 JumpInput.Up => new Vector2(0, flySpeed),
@@ -526,7 +526,7 @@ public class JumpStateNew : IPlayerState
         if(!isCloseJump && Vector2.Distance((Vector2)manager.transform.position, hitPos+headToLeg) >= 3f)
         {
             float lerpRatio = Vector2.Distance((Vector2)manager.transform.position, jumpStartPos+headToLeg) / totalDistance;
-            float flySpeed = parameter.flyingCurve.Evaluate(lerpRatio+0.01f);
+            float flySpeed = parameter.flyingCurve.Evaluate(lerpRatio+0.01f) * parameter.flySpeedFix;
             catLegRb.velocity = jumpInput switch
             {
                 JumpInput.Up => new Vector2(0, flySpeed),

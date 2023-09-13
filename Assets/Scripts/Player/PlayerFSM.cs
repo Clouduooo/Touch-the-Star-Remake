@@ -42,6 +42,8 @@ public class PlayerParameter        //player's data
     public bool isJumpRollingAnimFin;
     public AnimationCurve flyingCurve;
 
+    public float flySpeedFix;       //fix the speed of flying/jumping
+
     //The direction of platform player is on
     public PlatformDirType platformDir;
 
@@ -51,6 +53,7 @@ public class PlayerParameter        //player's data
     public float initCD;
     public float cdTime;
     public CircleObjectPool circleObjectPool;
+    public float jumpDurtaionFix;               //fix the extendDuration of jump
 
     //Raycast Checking parameter
     public Transform rayPoint_front;
