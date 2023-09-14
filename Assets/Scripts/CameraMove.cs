@@ -26,7 +26,7 @@ public class CameraMove : MonoBehaviour
         if(totalDistance != 0f)
         {
             targetSize = 100f + totalDistance / 5f;
-            virtualCamera.m_Lens.OrthographicSize = targetSize;
+            //virtualCamera.m_Lens.OrthographicSize = targetSize;
             if(totalDistance / 5f > 16f)
             {
                 StartCoroutine(move());
@@ -41,14 +41,14 @@ public class CameraMove : MonoBehaviour
 
     IEnumerator move()
     {
-        //while (virtualCamera.m_Lens.OrthographicSize < targetSize)
-        //{
-        //    lerp = (virtualCamera.m_Lens.OrthographicSize - 100f) / (targetSize - 100f); //value in 0~1
-        //    virtualCamera.m_Lens.OrthographicSize += scaleUpCurve.Evaluate(lerp) * scaleUpFix;
-        //    yield return null;
-        //}
-        //virtualCamera.m_Lens.OrthographicSize = targetSize;
-        //yield return null;
+        while (virtualCamera.m_Lens.OrthographicSize < targetSize)
+        {
+            lerp = (virtualCamera.m_Lens.OrthographicSize - 100f) / (targetSize - 100f); //value in 0~1
+            virtualCamera.m_Lens.OrthographicSize += (scaleUpCurve.Evaluate(lerp)+0.01f) * scaleUpFix;
+            yield return null;
+        }
+        virtualCamera.m_Lens.OrthographicSize = targetSize;
+        yield return null;
 
         float length = virtualCamera.m_Lens.OrthographicSize - 100f;
         while (virtualCamera.m_Lens.OrthographicSize > 100f)
