@@ -535,7 +535,7 @@ public class JumpStateNew : IPlayerState
             if(flySpeed*Time.fixedDeltaTime<Vector2.Distance((Vector2)catHead.transform.position, hitPos))
                 return;
         }
-        parameter.cam.totalDistance = totalDistance;    //give value to Camera Script
+        //parameter.cam.totalDistance = totalDistance;    //give value to Camera Script
         catHeadRb.velocity=Vector2.zero;
         catHead.transform.position=hitPos;
         jumpSubState=JumpSubState.LegFly;

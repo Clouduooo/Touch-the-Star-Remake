@@ -23,20 +23,23 @@ public class CameraMove : MonoBehaviour
 
     private void Update()
     {
-        if(totalDistance != 0f)
-        {
-            targetSize = 100f + totalDistance / 5f;
-            //virtualCamera.m_Lens.OrthographicSize = targetSize;
-            if(totalDistance / 5f > 16f)
-            {
-                StartCoroutine(move());
-            }
-            else
-            {
-                virtualCamera.m_Lens.OrthographicSize = 100f;
-            }
-            totalDistance = 0f;
-        }
+        // if(totalDistance != 0f)
+        // {
+        //     targetSize = 100f + totalDistance / 5f;
+        //     //virtualCamera.m_Lens.OrthographicSize = targetSize;
+        //     if(totalDistance / 5f > 16f)
+        //     {
+        //         StartCoroutine(move());
+        //     }
+        //     else
+        //     {
+        //         virtualCamera.m_Lens.OrthographicSize = 100f;
+        //     }
+        //     totalDistance = 0f;
+        // }
+        targetSize=100+totalDistance/5f;
+        virtualCamera.m_Lens.OrthographicSize=Mathf.Lerp(virtualCamera.m_Lens.OrthographicSize,targetSize,Time.deltaTime*5);
+        Debug.Log(virtualCamera.m_Lens.OrthographicSize);
     }
 
     IEnumerator move()
