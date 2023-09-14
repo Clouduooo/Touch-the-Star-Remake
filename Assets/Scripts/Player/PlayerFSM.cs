@@ -42,6 +42,9 @@ public class PlayerParameter        //player's data
     public bool isJumpRollingAnimFin;
     public AnimationCurve flyingCurve;
 
+    //camera
+    public CameraMove cam;
+
     public float flySpeedFix;       //fix the speed of flying/jumping
 
     //The direction of platform player is on

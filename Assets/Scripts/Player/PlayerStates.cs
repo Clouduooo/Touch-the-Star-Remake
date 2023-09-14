@@ -384,7 +384,6 @@ public class JumpStateNew : IPlayerState
             {
                 //get object
                 parameter.extendDuration = Vector2.Distance(hitPos, jumpStartPos) / parameter.jumpDurtaionFix;
-                Debug.Log(parameter.extendDuration);
                 parameter.isWalking = false;
                 parameter.circleObjectPool.C_Pool.Get();
                 jumpSubState = JumpSubState.JumpEnd;
@@ -501,6 +500,7 @@ public class JumpStateNew : IPlayerState
             }
         }
         totalDistance = Vector2.Distance(hitPos,jumpStartPos);
+        //parameter.cam.totalDistance = totalDistance;    //give value to Camera Script
         catHead.transform.position=jumpStartPos;
         headToLeg=manager.transform.position-catHead.transform.position;
         jumpSubState=JumpSubState.PreAnim;
@@ -535,6 +535,7 @@ public class JumpStateNew : IPlayerState
             if(flySpeed*Time.fixedDeltaTime<Vector2.Distance((Vector2)catHead.transform.position, hitPos))
                 return;
         }
+        parameter.cam.totalDistance = totalDistance;    //give value to Camera Script
         catHeadRb.velocity=Vector2.zero;
         catHead.transform.position=hitPos;
         jumpSubState=JumpSubState.LegFly;

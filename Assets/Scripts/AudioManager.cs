@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class AudioManager : MonoBehaviour
 {
     [SerializeField]
-    AudioClip bgm0, bgm1, bgm2, bgm3, bgm4, bgm5;
+    AudioClip[] BGM;
     AudioSource audioSource;
+
     public static AudioManager Instance
     {
         get; private set;
@@ -29,12 +31,23 @@ public class AudioManager : MonoBehaviour
 
     private void Start()
     {
-        audioSource.clip = bgm0;
+        audioSource.clip = BGM[0];
+        audioSource.loop = true;
         audioSource.Play();
     }
 
     private void Update()
     {
-        
+        if(SceneManager.GetActiveScene().buildIndex == 5)
+        {
+            audioSource.loop = false;
+        }
+    }
+
+    public void ChangeScene()
+    {
+        SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex + 1);
+        audioSource.clip = BGM[SceneManager.GetActiveScene().buildIndex + 1];
+        audioSource.Play();
     }
 }

@@ -22,8 +22,9 @@ public class CircleLoop : MonoBehaviour
     [SerializeField] Material Circle;
     private float fixedDuration;    //Get the value of extendDuration OnEnable, then fixed
     private float lerpRatio;
+    [SerializeField] float radiusSpeedFix;      //fix to keep on add up circleloop's radius
 
-    private void Start()
+    private void Awake()
     {
         player = GameObject.Find("cat").GetComponent<PlayerFSM>();
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -35,6 +36,7 @@ public class CircleLoop : MonoBehaviour
         transform.localScale = Vector2.zero;
         fixedDuration = player.parameter.extendDuration;
         t = 0;
+        radius = 0;
         if (player.parameter.isWalking)
         {
             spriteRenderer.material = Circle;
@@ -57,8 +59,15 @@ public class CircleLoop : MonoBehaviour
         {
             middlePos = transform.position;
             t += Time.deltaTime;
-            lerpRatio = t / fixedDuration;      //value in 0~1
-            radius = lightTileCurve.Evaluate(t) * 20 * fixedDuration;
+            //lerpRatio = t / fixedDuration;      //value in 0~1
+            //radius += lightTileCurve.Evaluate(t) * 20 * fixedDuration;
+            if(fixedDuration <= 1f)
+            {
+                radius += lightTileCurve.Evaluate(t) * Time.deltaTime * radiusSpeedFix;
+            }else if(fixedDuration > 1f)
+            {
+                radius += lightTileCurve.Evaluate(t) * Time.deltaTime * radiusSpeedFix * 1.8f;
+            }
             transform.localScale = new Vector3(radius/2.0f, radius/2.0f, radius/2.0f);
             if (t >= fixedDuration - 1f)         
             {
