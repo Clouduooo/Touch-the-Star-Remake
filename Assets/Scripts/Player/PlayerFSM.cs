@@ -44,7 +44,7 @@ public class PlayerParameter        //player's data
 
     //camera
     public CameraMove cam;
-    public Transform camTrackPoint;
+    //public Transform camTrackPoint;
 
     public float flySpeedFix;       //fix the speed of flying/jumping
 
@@ -116,8 +116,8 @@ public class PlayerFSM : MonoBehaviour
     private void FixedUpdate()
     {
         currentState.OnFixedUpdate();
-        if(!parameter.inJumpState)
-            AddSpeed();
+        if (!parameter.inJumpState)
+            PositionChangeBySpeed();
         ChangeCamTrackPoint();
     }
 
@@ -142,27 +142,14 @@ public class PlayerFSM : MonoBehaviour
         if (parameter.direction != 0 && !parameter.inJumpState)
         {
             gameObject.transform.localScale = new Vector3(-parameter.direction, 1, 1);
-            // switch (parameter.platformDir)
-            // {
-            //     case PlatformDirType.Up:
-            //         gameObject.transform.localScale = new Vector3(-parameter.direction, 1, 1);
-            //         break;
-            //     case PlatformDirType.Down:
-            //         gameObject.transform.localScale = new Vector3(parameter.direction, 1, 1);
-            //         break;
-                //case PlatformDirType.Left:
-                //    gameObject.transform.localScale = new Vector3(-parameter.direction, 1, 1);
-                //    break;
-                //case PlatformDirType.Right:
-                //    gameObject.transform.localScale = new Vector3(-parameter.direction, 1, 1);
-                //    break;
-            //}
         }
     }
 
-    void AddSpeed()
+    void PositionChangeBySpeed()
     {
-        parameter.rb.velocity = transform.rotation*parameter.speed;
+        Vector2 pos = transform.rotation * parameter.speed * Time.fixedDeltaTime;
+        Vector3 deltaPos = new Vector3(pos.x, pos.y, 0);
+        transform.position += deltaPos;
     }
 
     //Raycast Checking Function
@@ -217,12 +204,12 @@ public class PlayerFSM : MonoBehaviour
     {
         if(parameter.catHead.activeSelf)
         {
-            parameter.camTrackPoint.position=(parameter.catHead.transform.position+transform.position)/2;
+            //parameter.camTrackPoint.position=(parameter.catHead.transform.position+transform.position)/2;
             parameter.cam.totalDistance=Vector2.Distance(parameter.catHead.transform.position,transform.position);
         }
         else
         {
-            parameter.camTrackPoint.position=transform.position;
+            //parameter.camTrackPoint.position=transform.position;
             parameter.cam.totalDistance=0;
         }
     }

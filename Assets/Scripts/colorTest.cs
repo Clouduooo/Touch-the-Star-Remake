@@ -8,6 +8,6 @@ public class colorTest : MonoBehaviour
 
     private void OnEnable()
     {
-        tile.SearchColor(transform.position);
+        
     }
 }

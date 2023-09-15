@@ -6,14 +6,19 @@ using UnityEngine.Tilemaps;
 public class TileManager : MonoBehaviour
 {
     [SerializeField] GridLayout grid;
-    [SerializeField] Tilemap lightTile;
+    GameObject[] Tiles;
     [SerializeField] float fadeDuration;
     int x0,x1,y0,y1,z;
 
-    public bool SearchColor(Vector3 worldPos)
+    private void Start()
+    {
+        Tiles = GameObject.FindGameObjectsWithTag("LightTile");
+    }
+
+    public bool SearchColor(Tilemap tilemap, Vector3 worldPos)
     {
         Vector3Int pos = grid.WorldToCell(worldPos);
-        if (lightTile.GetColor(pos).a == 1f)
+        if (tilemap.GetColor(pos).a == 0.9f)
         {
             return true;
         }
@@ -32,15 +37,19 @@ public class TileManager : MonoBehaviour
             for (int y = y0; y <= y1; y++)
             {
                 Vector3Int pos = new Vector3Int(x, y, 0);
-                if (lightTile.GetColor(pos).a == 0f)
+                for (int i = 0; i < Tiles.Length; i++)
                 {
-                    StartCoroutine(TileAppearAlpha(pos));
+                    Tilemap tilemap = Tiles[i].GetComponent<Tilemap>();
+                    if (tilemap.GetColor(pos).a == 0f)
+                    {
+                        StartCoroutine(TileAppearAlpha(tilemap, pos));
+                    }
                 }
             }
         }
     }
 
-    IEnumerator TileAppearAlpha(Vector3Int pos)
+    IEnumerator TileAppearAlpha(Tilemap lightTile, Vector3Int pos)
     {
         float startTime = Time.time;
         float endTime = startTime + fadeDuration; // Tile fade in duration
@@ -55,8 +64,8 @@ public class TileManager : MonoBehaviour
             yield return null;
         }
 
-        // make sure the final alpha is 1f
-        color.a = 1f;
+        // make sure the final alpha is 0.9f
+        color.a = 0.9f;
         lightTile.SetTileFlags(pos, TileFlags.None);
         lightTile.SetColor(pos, color);
     }

@@ -11,12 +11,16 @@ public class LightSquare : MonoBehaviour
     private float t;
     public float extendDuration = 4f;
     [SerializeField] float initCD;
+    AudioManager audioManager;
+    bool isPlayed;
 
     private void Awake()
     {
+        isPlayed = false;
         t = initCD;
         spriteRenderer = GetComponent<SpriteRenderer>();
         pool = GetComponent<SquareObjectPool>();
+        //audioManager = GameObject.FindGameObjectWithTag("AudioManager").GetComponent<AudioManager>();
     }
 
     private void Update()
@@ -36,8 +40,10 @@ public class LightSquare : MonoBehaviour
     {
         if (collision.CompareTag("CircleLoop"))
         {
+            //audioManager.PlayEffect();
             spriteRenderer.sprite = squre2;
             isActive = true;
+            //isPlayed = true;
         }
     }
 }

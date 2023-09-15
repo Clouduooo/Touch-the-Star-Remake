@@ -6,6 +6,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering.Universal.Internal;
+using UnityEngine.Tilemaps;
 
 #region IdleState
 public class IdleState : IPlayerState
@@ -205,7 +206,7 @@ public class JumpState : IPlayerState
             case JumpInput.Up:
             {
                 RaycastHit2D hit=Physics2D.Raycast((Vector2)parameter.jumpCheckRayStartPoint.transform.position, manager.transform.up, Mathf.Infinity, parameter.lightLayer);
-                if(!hit.collider.IsUnityNull() && parameter.tileManager.SearchColor((Vector3)hit.point+0.5f*manager.transform.up))
+                if(!hit.collider.IsUnityNull() && parameter.tileManager.SearchColor(hit.collider.GetComponent<Tilemap>(),(Vector3)hit.point+0.5f*manager.transform.up))
                 {
                     parameter.jumpHit = hit;
                     //Time.timeScale = 0f;
@@ -229,7 +230,7 @@ public class JumpState : IPlayerState
                 Debug.DrawRay(hit.point,10*Vector2.right,Color.red,100000);
                 Debug.DrawRay((Vector3)hit.point+0.5f*-manager.transform.right,10*Vector2.up,Color.blue,100000);
                 Debug.DrawRay((Vector3)hit.point+0.5f*-manager.transform.right,10*Vector2.right,Color.blue,100000);
-                if(!hit.collider.IsUnityNull() && parameter.tileManager.SearchColor((Vector3)hit.point+0.5f*-manager.transform.right))
+                if(!hit.collider.IsUnityNull() && parameter.tileManager.SearchColor(hit.collider.GetComponent<Tilemap>(), (Vector3)hit.point+0.5f*-manager.transform.right))
                 {
                     parameter.jumpHit = hit;
                     //Time.timeScale = 0f;
@@ -256,7 +257,7 @@ public class JumpState : IPlayerState
                 Debug.DrawRay(hit.point,10*Vector2.right,Color.red,100000);
                 Debug.DrawRay((Vector3)hit.point+0.5f*-manager.transform.right,10*Vector2.up,Color.blue,100000);
                 Debug.DrawRay((Vector3)hit.point+0.5f*-manager.transform.right,10*Vector2.right,Color.blue,100000);
-                if(!hit.collider.IsUnityNull() && parameter.tileManager.SearchColor((Vector3)hit.point+0.5f*manager.transform.right))
+                if(!hit.collider.IsUnityNull() && parameter.tileManager.SearchColor(hit.collider.GetComponent<Tilemap>(), (Vector3)hit.point+0.5f*manager.transform.right))
                 {
                     parameter.jumpHit = hit;
                     //Time.timeScale = 0f;
@@ -435,7 +436,8 @@ public class JumpStateNew : IPlayerState
                 Debug.DrawRay(hit.point,10*Vector2.right,Color.red,100000);
                 Debug.DrawRay((Vector3)hit.point+0.5f*-manager.transform.right,10*Vector2.up,Color.blue,100000);
                 Debug.DrawRay((Vector3)hit.point+0.5f*-manager.transform.right,10*Vector2.right,Color.blue,100000);
-                if(!hit.collider.IsUnityNull() && parameter.tileManager.SearchColor((Vector3)hitPos+0.5f*manager.transform.up))
+                if(!hit.collider.IsUnityNull() && (parameter.tileManager.SearchColor(hit.collider.GetComponent<Tilemap>(), (Vector3)hitPos+0.5f*manager.transform.up) ||
+                        hit.collider.GetComponent<MoveTile>().isLightUp))
                 {
                     catHead.transform.localRotation = Quaternion.Euler(0, 0, 0);
                     catHead.transform.localScale = new Vector3(40, 40, 40);
@@ -457,7 +459,8 @@ public class JumpStateNew : IPlayerState
                 Debug.DrawRay(hit.point,10*Vector2.right,Color.red,100000);
                 Debug.DrawRay((Vector3)hit.point+0.5f*-manager.transform.right,10*Vector2.up,Color.blue,100000);
                 Debug.DrawRay((Vector3)hit.point+0.5f*-manager.transform.right,10*Vector2.right,Color.blue,100000);
-                if(!hit.collider.IsUnityNull() && parameter.tileManager.SearchColor((Vector3)hitPos+0.5f*-manager.transform.right))
+                if(!hit.collider.IsUnityNull() && (parameter.tileManager.SearchColor(hit.collider.GetComponent<Tilemap>(), (Vector3)hitPos+0.5f*-manager.transform.right) ||
+                        hit.collider.GetComponent<MoveTile>().isLightUp))
                 {
                     manager.transform.localScale = new Vector3(1, 1, 1);
                     catHead.transform.localRotation = Quaternion.Euler(0, 0, 90);
@@ -482,7 +485,8 @@ public class JumpStateNew : IPlayerState
                 Debug.DrawRay(hit.point,10*Vector2.right,Color.red,100000);
                 Debug.DrawRay((Vector3)hit.point+0.5f*-manager.transform.right,10*Vector2.up,Color.blue,100000);
                 Debug.DrawRay((Vector3)hit.point+0.5f*-manager.transform.right,10*Vector2.right,Color.blue,100000);
-                if(!hit.collider.IsUnityNull() && parameter.tileManager.SearchColor((Vector3)hitPos+0.5f*manager.transform.right))
+                if(!hit.collider.IsUnityNull() && (parameter.tileManager.SearchColor(hit.collider.GetComponent<Tilemap>(), (Vector3)hitPos+0.5f*manager.transform.right) ||
+                        hit.collider.GetComponent<MoveTile>().isLightUp))
                 {
                     manager.transform.localScale = new Vector3(-1, 1, 1);
                     catHead.transform.localRotation = Quaternion.Euler(0, 0, 90);

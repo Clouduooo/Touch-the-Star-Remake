@@ -5,8 +5,9 @@ using UnityEngine.SceneManagement;
 
 public class AudioManager : MonoBehaviour
 {
-    [SerializeField]
-    AudioClip[] BGM;
+    [SerializeField] AudioClip[] BGM;
+    [SerializeField] AudioClip[] effect;
+    [SerializeField] AudioClip star;
     AudioSource audioSource;
 
     public static AudioManager Instance
@@ -49,5 +50,16 @@ public class AudioManager : MonoBehaviour
         SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex + 1);
         audioSource.clip = BGM[SceneManager.GetActiveScene().buildIndex + 1];
         audioSource.Play();
+    }
+
+    public void PlayEffect()
+    {
+        //int i = Random.Range(0, effect.Length);
+        //audioSource.PlayOneShot(effect[i]);
+    }
+
+    public void PlayStar()
+    {
+        audioSource.PlayOneShot(star);
     }
 }
