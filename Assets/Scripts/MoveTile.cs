@@ -83,14 +83,6 @@ public class MoveTile : MonoBehaviour
         if (collision.CompareTag("CircleLoop") && !isLightUp)
         {
             isLightUp = true;
-            for (int x = bounds.xMin; x <= bounds.xMax; x++)
-            {
-                for (int y = bounds.yMin; y < bounds.yMax; y++)
-                {
-                    Vector3Int pos = new Vector3Int(x, y, 0);
-                    StartCoroutine(TileAppearAlpha(lightTile, pos));
-                }
-            }
         }
     }
     private void OnTriggerExit2D(Collider2D collision)
@@ -147,26 +139,5 @@ public class MoveTile : MonoBehaviour
         {
             t = 0f;
         }
-    }
-
-    IEnumerator TileAppearAlpha(Tilemap lightTile, Vector3Int pos)
-    {
-        float startTime = Time.time;
-        float endTime = startTime + fadeDuration; // Tile fade in duration
-        Color color = lightTile.GetColor(pos);
-
-        while (Time.time < endTime)
-        {
-            float t1 = (Time.time - startTime) / (endTime - startTime); // get current alpha
-            color.a = t1;
-            lightTile.SetTileFlags(pos, TileFlags.None);   //unlock Tile
-            lightTile.SetColor(pos, color);                //change color
-            yield return null;
-        }
-
-        // make sure the final alpha is 0.9f
-        color.a = 0.9f;
-        lightTile.SetTileFlags(pos, TileFlags.None);
-        lightTile.SetColor(pos, color);
     }
 }

@@ -436,13 +436,27 @@ public class JumpStateNew : IPlayerState
                 Debug.DrawRay(hit.point,10*Vector2.right,Color.red,100000);
                 Debug.DrawRay((Vector3)hit.point+0.5f*-manager.transform.right,10*Vector2.up,Color.blue,100000);
                 Debug.DrawRay((Vector3)hit.point+0.5f*-manager.transform.right,10*Vector2.right,Color.blue,100000);
-                if(!hit.collider.IsUnityNull() && (parameter.tileManager.SearchColor(hit.collider.GetComponent<Tilemap>(), (Vector3)hitPos+0.5f*manager.transform.up) ||
-                        hit.collider.GetComponent<MoveTile>().isLightUp))
+                if(!hit.collider.IsUnityNull() && parameter.tileManager.SearchColor(hit.collider.GetComponent<Tilemap>(), (Vector3)hitPos+0.5f*manager.transform.up))
                 {
                     catHead.transform.localRotation = Quaternion.Euler(0, 0, 0);
                     catHead.transform.localScale = new Vector3(40, 40, 40);
                     jumpStartPos = manager.transform.position + manager.transform.rotation * vertStartPos;
                     parameter.animator.Play("Jump_Prepare_Verticle");
+                }
+                else if(!hit.collider.IsUnityNull() && hit.collider.gameObject.TryGetComponent(out MoveTile moveTile))
+                {
+                    if(moveTile.isLightUp)
+                    {
+                        catHead.transform.localRotation = Quaternion.Euler(0, 0, 0);
+                        catHead.transform.localScale = new Vector3(40, 40, 40);
+                        jumpStartPos = manager.transform.position + manager.transform.rotation * vertStartPos;
+                        parameter.animator.Play("Jump_Prepare_Verticle");
+                    }
+                    else
+                    {
+                        jumpSubState = JumpSubState.JumpEnd;
+                        return;
+                    }
                 }
                 else
                 {
@@ -459,8 +473,7 @@ public class JumpStateNew : IPlayerState
                 Debug.DrawRay(hit.point,10*Vector2.right,Color.red,100000);
                 Debug.DrawRay((Vector3)hit.point+0.5f*-manager.transform.right,10*Vector2.up,Color.blue,100000);
                 Debug.DrawRay((Vector3)hit.point+0.5f*-manager.transform.right,10*Vector2.right,Color.blue,100000);
-                if(!hit.collider.IsUnityNull() && (parameter.tileManager.SearchColor(hit.collider.GetComponent<Tilemap>(), (Vector3)hitPos+0.5f*-manager.transform.right) ||
-                        hit.collider.GetComponent<MoveTile>().isLightUp))
+                if(!hit.collider.IsUnityNull() && parameter.tileManager.SearchColor(hit.collider.GetComponent<Tilemap>(), (Vector3)hitPos+0.5f*-manager.transform.right))
                 {
                     manager.transform.localScale = new Vector3(1, 1, 1);
                     catHead.transform.localRotation = Quaternion.Euler(0, 0, 90);
@@ -468,6 +481,23 @@ public class JumpStateNew : IPlayerState
                     // parameter.catHead.GetComponent<CatHead>().startPos = new Vector3(manager.transform.position.x - 12.6f, manager.transform.position.y + 6.2f, manager.transform.position.z);
                     jumpStartPos = manager.transform.position + manager.transform.rotation * leftStartPos;
                     parameter.animator.Play("Jump_Prepare_Horizontal");
+                }
+                else if(!hit.collider.IsUnityNull() && hit.collider.gameObject.TryGetComponent(out MoveTile moveTile))
+                {
+                    if(moveTile.isLightUp)
+                    {
+                        manager.transform.localScale = new Vector3(1, 1, 1);
+                        catHead.transform.localRotation = Quaternion.Euler(0, 0, 90);
+                        catHead.transform.localScale = new Vector3(40, 40, 40);
+                        // parameter.catHead.GetComponent<CatHead>().startPos = new Vector3(manager.transform.position.x - 12.6f, manager.transform.position.y + 6.2f, manager.transform.position.z);
+                        jumpStartPos = manager.transform.position + manager.transform.rotation * leftStartPos;
+                        parameter.animator.Play("Jump_Prepare_Horizontal");
+                    }
+                    else
+                    {
+                        jumpSubState = JumpSubState.JumpEnd;
+                        return;
+                    }
                 }
                 else
                 {
@@ -485,8 +515,7 @@ public class JumpStateNew : IPlayerState
                 Debug.DrawRay(hit.point,10*Vector2.right,Color.red,100000);
                 Debug.DrawRay((Vector3)hit.point+0.5f*-manager.transform.right,10*Vector2.up,Color.blue,100000);
                 Debug.DrawRay((Vector3)hit.point+0.5f*-manager.transform.right,10*Vector2.right,Color.blue,100000);
-                if(!hit.collider.IsUnityNull() && (parameter.tileManager.SearchColor(hit.collider.GetComponent<Tilemap>(), (Vector3)hitPos+0.5f*manager.transform.right) ||
-                        hit.collider.GetComponent<MoveTile>().isLightUp))
+                if(!hit.collider.IsUnityNull() && parameter.tileManager.SearchColor(hit.collider.GetComponent<Tilemap>(), (Vector3)hitPos + 0.5f * manager.transform.right))
                 {
                     manager.transform.localScale = new Vector3(-1, 1, 1);
                     catHead.transform.localRotation = Quaternion.Euler(0, 0, 90);
@@ -494,6 +523,23 @@ public class JumpStateNew : IPlayerState
                     // parameter.catHead.GetComponent<CatHead>().startPos = new Vector3(manager.transform.position.x + 12.6f, manager.transform.position.y + 6.2f, manager.transform.position.z);
                     jumpStartPos = manager.transform.position + manager.transform.rotation * rightStartPos;                            
                     parameter.animator.Play("Jump_Prepare_Horizontal");
+                }
+                else if(!hit.collider.IsUnityNull() && hit.collider.gameObject.TryGetComponent(out MoveTile moveTile))
+                {
+                    if(moveTile.isLightUp)
+                    {
+                        manager.transform.localScale = new Vector3(-1, 1, 1);
+                        catHead.transform.localRotation = Quaternion.Euler(0, 0, 90);
+                        catHead.transform.localScale = new Vector3(40, 40, 40);
+                        // parameter.catHead.GetComponent<CatHead>().startPos = new Vector3(manager.transform.position.x + 12.6f, manager.transform.position.y + 6.2f, manager.transform.position.z);
+                        jumpStartPos = manager.transform.position + manager.transform.rotation * rightStartPos;                            
+                        parameter.animator.Play("Jump_Prepare_Horizontal");
+                    }
+                    else
+                    {
+                        jumpSubState = JumpSubState.JumpEnd;
+                        return;
+                    }
                 }
                 else
                 {

@@ -19,9 +19,9 @@ public class Star : MonoBehaviour
     {
         if (collision.CompareTag("CircleLoop") && !isPlayed)
         {
-            audioManager.PlayStar();
+            //audioManager.PlayStar();
             star.SetActive(true);
-            isPlayed = true;
+            //isPlayed = true;
         }
 
         if (star.activeSelf && collision.CompareTag("Player"))
