@@ -18,6 +18,7 @@ public class CircleLoop2 : MonoBehaviour
     [SerializeField] AnimationCurve fadeCurve;
     TileManager tileManager;
     public Action backToPool;       //boardcast the action to put this gameobject back to objectpool
+    float lastRadius;
 
     private void Awake()
     {
@@ -30,6 +31,7 @@ public class CircleLoop2 : MonoBehaviour
     {
         radius = 0;
         t = 0;
+        lastRadius=0;
         spriteRenderer.color = new Color(1, 1, 1, 0.2f);
         transform.localScale=Vector2.zero;
     }
@@ -53,7 +55,11 @@ public class CircleLoop2 : MonoBehaviour
                 alpha = fadeCurve.Evaluate(lightSquare.extendDuration - t);    //value in 0~0.2
                 spriteRenderer.color = new Color(1, 1, 1, alpha);
             }
-            tileManager.SetTileColor(middlePos, radius);
+            for(int r=Mathf.FloorToInt(lastRadius);r<=Mathf.Ceil(radius);r++)
+            {
+                tileManager.SetTileColor(middlePos, r);
+            }
+            lastRadius=radius;
         }
         else
         {

@@ -23,6 +23,7 @@ public class CircleLoop : MonoBehaviour
     private float fixedDuration;    //Get the value of extendDuration OnEnable, then fixed
     private float lerpRatio;
     [SerializeField] float radiusSpeedFix;      //fix to keep on add up circleloop's radius
+    float lastRadius;
 
     private void Awake()
     {
@@ -37,6 +38,7 @@ public class CircleLoop : MonoBehaviour
         fixedDuration = player.parameter.extendDuration;
         t = 0;
         radius = 0;
+        lastRadius=0;
         if (player.parameter.isWalking)
         {
             spriteRenderer.material = Circle;
@@ -74,7 +76,11 @@ public class CircleLoop : MonoBehaviour
                 alpha = fadeCurve.Evaluate(fixedDuration - t);    //value in 0~1
                 spriteRenderer.color = new Color(1, 1, 1, alpha);
             }
-            tileManager.SetTileColor(middlePos, radius);
+            for(int r=Mathf.FloorToInt(lastRadius);r<=Mathf.Ceil(radius);r++)
+            {
+                tileManager.SetTileColor(middlePos, r);
+            }
+            lastRadius=radius;
         }
         else
         {
