@@ -44,7 +44,7 @@ public class PlayerParameter        //player's data
 
     //camera
     public CameraMove cam;
-    //public Transform camTrackPoint;
+    public Transform camTrackPoint;
 
     public float flySpeedFix;       //fix the speed of flying/jumping
 
@@ -109,7 +109,7 @@ public class PlayerFSM : MonoBehaviour
 
         TransitionState(StateType.Idle);    //Initialize the first state--Idle
 
-        //test
+        //CD to enable CircleLoop
         parameter.initCD = parameter.cdTime;
     }
 
@@ -204,12 +204,12 @@ public class PlayerFSM : MonoBehaviour
     {
         if(parameter.catHead.activeSelf)
         {
-            //parameter.camTrackPoint.position=(parameter.catHead.transform.position+transform.position)/2;
+            parameter.camTrackPoint.position=(parameter.catHead.transform.position+transform.position)/2;
             parameter.cam.totalDistance=Vector2.Distance(parameter.catHead.transform.position,transform.position);
         }
         else
         {
-            //parameter.camTrackPoint.position=transform.position;
+            parameter.camTrackPoint.position=transform.position;
             parameter.cam.totalDistance=0;
         }
     }

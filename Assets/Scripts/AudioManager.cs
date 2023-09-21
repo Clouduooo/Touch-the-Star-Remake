@@ -14,7 +14,6 @@ public class AudioManager : MonoBehaviour
     AudioSource audioSource;
     [SerializeField] GameObject canvas;
     [SerializeField] Image image;
-    private float t;
     [SerializeField] float fadeDuration;    //change in inspector
     private bool changeScene;
     private float alpha;
@@ -32,7 +31,6 @@ public class AudioManager : MonoBehaviour
         }
         else
         {
-            t = 0f;
             canvas.SetActive(false);
             Instance = this;
             DontDestroyOnLoad(this.gameObject);
