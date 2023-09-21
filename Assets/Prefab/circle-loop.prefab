@@ -174,7 +174,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   SpriteDefault: {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   Circle: {fileID: 2100000, guid: 1616d136ebbae3f4d8181f12c451b92c, type: 2}
-  radiusSpeedFix: 46
+  radiusSpeedFix: 50
 --- !u!114 &1144602081267070212
 MonoBehaviour:
   m_ObjectHideFlags: 0
