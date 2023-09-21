@@ -43,8 +43,9 @@ public class TileManager : MonoBehaviour
             // Debug.DrawLine(new Vector3(x0,y0),new Vector3(x1,y0),Color.red,1);
             // Debug.DrawLine(new Vector3(x0,y1),new Vector3(x1,y1),Color.red,1);
 
-            int mx = Mathf.RoundToInt(middlePos.x);
-            int my = Mathf.RoundToInt(middlePos.y);
+            Vector3 tilepos=tilemap.WorldToLocal(middlePos);
+            int mx = Mathf.RoundToInt(tilepos.x);
+            int my = Mathf.RoundToInt(tilepos.y);
             int x = 0;
             int y = Mathf.RoundToInt(radius);
             int d = Mathf.RoundToInt(1 - radius);
