@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using static UnityEditor.PlayerSettings;
 
 public class TileManager : MonoBehaviour
 {
@@ -48,41 +49,78 @@ public class TileManager : MonoBehaviour
             int y = Mathf.RoundToInt(radius);
             int d = Mathf.RoundToInt(1 - radius);
 
-            while (y > x)
+            while (y >= x)
             {
-                Vector3Int pos = new Vector3Int(x + mx, y + my, 0);
+                Vector3Int pos;
+
+                pos = new Vector3Int(mx + x, my + y, 0);
                 if (tilemap.GetColor(pos).a == 0f)
                     StartCoroutine(TileAppearAlpha(tilemap, pos));
 
-                pos = new Vector3Int(y + mx, x + my, 0);
+                pos = new Vector3Int(mx + x, my - y, 0);
                 if (tilemap.GetColor(pos).a == 0f)
                     StartCoroutine(TileAppearAlpha(tilemap, pos));
 
-                pos = new Vector3Int(-x + mx, y + my, 0);
+                pos = new Vector3Int(mx - x, my + y, 0);
                 if (tilemap.GetColor(pos).a == 0f)
                     StartCoroutine(TileAppearAlpha(tilemap, pos));
 
-                pos = new Vector3Int(-y + mx, x + my, 0);
+                pos = new Vector3Int(mx - x, my - y, 0);
                 if (tilemap.GetColor(pos).a == 0f)
                     StartCoroutine(TileAppearAlpha(tilemap, pos));
 
-                pos = new Vector3Int(-x + mx, -y + my, 0);
+                pos = new Vector3Int(mx + y, my + x, 0);
                 if (tilemap.GetColor(pos).a == 0f)
                     StartCoroutine(TileAppearAlpha(tilemap, pos));
 
-                pos = new Vector3Int(-y + mx, -x + my, 0);
+                pos = new Vector3Int(mx + y, my - x, 0);
                 if (tilemap.GetColor(pos).a == 0f)
                     StartCoroutine(TileAppearAlpha(tilemap, pos));
 
-                pos = new Vector3Int(x + mx, -y + my, 0);
+                pos = new Vector3Int(mx - y, my + x, 0);
                 if (tilemap.GetColor(pos).a == 0f)
                     StartCoroutine(TileAppearAlpha(tilemap, pos));
 
-                pos = new Vector3Int(y + mx, -x + my, 0);
+                pos = new Vector3Int(mx - y, my - x, 0);
                 if (tilemap.GetColor(pos).a == 0f)
                     StartCoroutine(TileAppearAlpha(tilemap, pos));
 
-                if(d < 0)
+
+
+                pos = new Vector3Int(mx + x - 1, my + y, 0);
+                if (tilemap.GetColor(pos).a == 0f)
+                    StartCoroutine(TileAppearAlpha(tilemap, pos));
+
+                pos = new Vector3Int(mx + x - 1, my - y, 0);
+                if (tilemap.GetColor(pos).a == 0f)
+                    StartCoroutine(TileAppearAlpha(tilemap, pos));
+
+                pos = new Vector3Int(mx - x + 1, my + y, 0);
+                if (tilemap.GetColor(pos).a == 0f)
+                    StartCoroutine(TileAppearAlpha(tilemap, pos));
+
+                pos = new Vector3Int(mx - x + 1, my - y, 0);
+                if (tilemap.GetColor(pos).a == 0f)
+                    StartCoroutine(TileAppearAlpha(tilemap, pos));
+
+                pos = new Vector3Int(mx + y - 1, my + x, 0);
+                if (tilemap.GetColor(pos).a == 0f)
+                    StartCoroutine(TileAppearAlpha(tilemap, pos));
+
+                pos = new Vector3Int(mx + y - 1, my - x, 0);
+                if (tilemap.GetColor(pos).a == 0f)
+                    StartCoroutine(TileAppearAlpha(tilemap, pos));
+
+                pos = new Vector3Int(mx - y + 1, my + x, 0);
+                if (tilemap.GetColor(pos).a == 0f)
+                    StartCoroutine(TileAppearAlpha(tilemap, pos));
+
+                pos = new Vector3Int(mx - y + 1, my - x, 0);
+                if (tilemap.GetColor(pos).a == 0f)
+                    StartCoroutine(TileAppearAlpha(tilemap, pos));
+
+
+                if (d < 0)
                 {
                     d = d + 2 * x + 3;
                 }
