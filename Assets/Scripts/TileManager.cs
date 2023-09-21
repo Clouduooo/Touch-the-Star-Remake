@@ -30,48 +30,102 @@ public class TileManager : MonoBehaviour
 
         for (int i = 0; i < Tiles.Length; i++)
         {
-            x0 = (int)Mathf.Ceil(Tiles[i].GetComponent<Tilemap>().WorldToCell(new Vector3(middlePos.x - radius, middlePos.y, middlePos.z)).x);
-            x1 = (int)Mathf.Floor(Tiles[i].GetComponent<Tilemap>().WorldToCell(new Vector3(middlePos.x + radius, middlePos.y, middlePos.z)).x);
-            y0 = (int)Mathf.Ceil(Tiles[i].GetComponent<Tilemap>().WorldToCell(new Vector3(middlePos.x, middlePos.y - radius, middlePos.z)).y);
-            y1 = (int)Mathf.Floor(Tiles[i].GetComponent<Tilemap>().WorldToCell(new Vector3(middlePos.x, middlePos.y + radius, middlePos.z)).y);
-            z = (int)Mathf.Floor(Tiles[i].GetComponent<Tilemap>().WorldToCell(new Vector3(middlePos.x, middlePos.y, middlePos.z)).z);
+            //x0 = (int)Mathf.Ceil(Tiles[i].GetComponent<Tilemap>().WorldToCell(new Vector3(middlePos.x - radius, middlePos.y, middlePos.z)).x);
+            //x1 = (int)Mathf.Floor(Tiles[i].GetComponent<Tilemap>().WorldToCell(new Vector3(middlePos.x + radius, middlePos.y, middlePos.z)).x);
+            //y0 = (int)Mathf.Ceil(Tiles[i].GetComponent<Tilemap>().WorldToCell(new Vector3(middlePos.x, middlePos.y - radius, middlePos.z)).y);
+            //y1 = (int)Mathf.Floor(Tiles[i].GetComponent<Tilemap>().WorldToCell(new Vector3(middlePos.x, middlePos.y + radius, middlePos.z)).y);
+            //z = (int)Mathf.Floor(Tiles[i].GetComponent<Tilemap>().WorldToCell(new Vector3(middlePos.x, middlePos.y, middlePos.z)).z);
+
             Tilemap tilemap = Tiles[i].GetComponent<Tilemap>();
             // Debug.DrawLine(new Vector3(x0,y0),new Vector3(x0,y1),Color.red,1);
             // Debug.DrawLine(new Vector3(x1,y0),new Vector3(x1,y1),Color.red,1);
             // Debug.DrawLine(new Vector3(x0,y0),new Vector3(x1,y0),Color.red,1);
             // Debug.DrawLine(new Vector3(x0,y1),new Vector3(x1,y1),Color.red,1);
-            for (int x = x0; x <= x1; x++)
+
+            int mx = Mathf.RoundToInt(middlePos.x);
+            int my = Mathf.RoundToInt(middlePos.y);
+            int x = 0;
+            int y = Mathf.RoundToInt(radius);
+            int d = Mathf.RoundToInt(1 - radius);
+
+            while (y > x)
             {
-                Vector3Int pos = new Vector3Int(x, y0, 0);
+                Vector3Int pos = new Vector3Int(x + mx, y + my, 0);
                 if (tilemap.GetColor(pos).a == 0f)
-                {
                     StartCoroutine(TileAppearAlpha(tilemap, pos));
-                }
-            }
-            for (int x = x0; x <= x1; x++)
-            {
-                Vector3Int pos = new Vector3Int(x, y1, 0);
+
+                pos = new Vector3Int(y + mx, x + my, 0);
                 if (tilemap.GetColor(pos).a == 0f)
-                {
                     StartCoroutine(TileAppearAlpha(tilemap, pos));
-                }
-            }
-            for (int y = y0; y <= y1; y++)
-            {
-                Vector3Int pos = new Vector3Int(x0, y, 0);
+
+                pos = new Vector3Int(-x + mx, y + my, 0);
                 if (tilemap.GetColor(pos).a == 0f)
-                {
                     StartCoroutine(TileAppearAlpha(tilemap, pos));
-                }
-            }
-            for (int y = y0; y <= y1; y++)
-            {
-                Vector3Int pos = new Vector3Int(x1, y, 0);
+
+                pos = new Vector3Int(-y + mx, x + my, 0);
                 if (tilemap.GetColor(pos).a == 0f)
-                {
                     StartCoroutine(TileAppearAlpha(tilemap, pos));
+
+                pos = new Vector3Int(-x + mx, -y + my, 0);
+                if (tilemap.GetColor(pos).a == 0f)
+                    StartCoroutine(TileAppearAlpha(tilemap, pos));
+
+                pos = new Vector3Int(-y + mx, -x + my, 0);
+                if (tilemap.GetColor(pos).a == 0f)
+                    StartCoroutine(TileAppearAlpha(tilemap, pos));
+
+                pos = new Vector3Int(x + mx, -y + my, 0);
+                if (tilemap.GetColor(pos).a == 0f)
+                    StartCoroutine(TileAppearAlpha(tilemap, pos));
+
+                pos = new Vector3Int(y + mx, -x + my, 0);
+                if (tilemap.GetColor(pos).a == 0f)
+                    StartCoroutine(TileAppearAlpha(tilemap, pos));
+
+                if(d < 0)
+                {
+                    d = d + 2 * x + 3;
                 }
+                else
+                {
+                    d = d + 2 * (x - y) + 5;
+                    y--;
+                }
+                x++;
             }
+
+            //for (int x = x0; x <= x1; x++)
+            //{
+            //    Vector3Int pos = new Vector3Int(x, y0, 0);
+            //    if (tilemap.GetColor(pos).a == 0f)
+            //    {
+            //        StartCoroutine(TileAppearAlpha(tilemap, pos));
+            //    }
+            //}
+            //for (int x = x0; x <= x1; x++)
+            //{
+            //    Vector3Int pos = new Vector3Int(x, y1, 0);
+            //    if (tilemap.GetColor(pos).a == 0f)
+            //    {
+            //        StartCoroutine(TileAppearAlpha(tilemap, pos));
+            //    }
+            //}
+            //for (int y = y0; y <= y1; y++)
+            //{
+            //    Vector3Int pos = new Vector3Int(x0, y, 0);
+            //    if (tilemap.GetColor(pos).a == 0f)
+            //    {
+            //        StartCoroutine(TileAppearAlpha(tilemap, pos));
+            //    }
+            //}
+            //for (int y = y0; y <= y1; y++)
+            //{
+            //    Vector3Int pos = new Vector3Int(x1, y, 0);
+            //    if (tilemap.GetColor(pos).a == 0f)
+            //    {
+            //        StartCoroutine(TileAppearAlpha(tilemap, pos));
+            //    }
+            //}
         }
 
         // for (int x = x0; x <= x1; x++)
